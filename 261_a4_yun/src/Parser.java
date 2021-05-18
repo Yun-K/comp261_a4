@@ -173,6 +173,14 @@ public class Parser {
 
 }
 
+class MoveNode implements RobotProgramNode {
+
+    @Override
+    public void execute(Robot robot) {
+        robot.move();
+    }
+}
+
 // You could add the node classes here, as long as they are not declared public (or private)
 class TurnLNode implements RobotProgramNode {
 
@@ -199,14 +207,6 @@ class TakeFuelNode implements RobotProgramNode {
     }
 }
 
-class MoveNode implements RobotProgramNode {
-
-    @Override
-    public void execute(Robot robot) {
-        robot.move();
-    }
-}
-
 class WaitNode implements RobotProgramNode {
 
     @Override
@@ -218,4 +218,26 @@ class WaitNode implements RobotProgramNode {
             e.printStackTrace();
         }
     }
+}
+
+class LoopNode implements RobotProgramNode {
+
+    private RobotProgramNode block;
+
+    public LoopNode(RobotProgramNode block) {
+        this.block = block;
+    }
+
+    @Override
+    public void execute(Robot robot) {
+        while (true) {
+            block.execute(robot);
+        }
+    }
+
+    public String toString() {
+        // return "loop" + this.block;
+        return "loop {\n" + block + "\n}";
+    }
+
 }
