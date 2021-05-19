@@ -1,4 +1,5 @@
 package provided;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -122,13 +123,31 @@ public class Parser {
      * }
      */
     static RobotProgramNode parseProgram(Scanner s) {
-        // THE PARSER GOES HERE
-
+        // THE PARSER GOES HERE: TODO
+        List<RobotProgramNode> allProgramNodes = new ArrayList<RobotProgramNode>();
         // loop until the end
         while (s.hasNext()) {
-
+            allProgramNodes.add(parseSTMT(s));
+            s.next();// go to scan next
         }
+        ACT actNode = new TurnLNode();
 
+        return null;
+    }
+
+    static RobotProgramNode parseSTMT(Scanner scanner) {
+        return null;
+    }
+
+    static RobotProgramNode parseACT(Scanner scanner) {
+        return null;
+    }
+
+    static RobotProgramNode parseLOOP(Scanner scanner) {
+        return null;
+    }
+
+    static RobotProgramNode parseBLOCK(Scanner scanner) {
         return null;
     }
 
@@ -210,150 +229,4 @@ public class Parser {
 
 }
 
-class MoveNode implements RobotProgramNode {
-
-    @Override
-    public void execute(Robot robot) {
-        robot.move();
-    }
-}
-
 // You could add the node classes here, as long as they are not declared public (or private)
-class ActionNode implements RobotProgramNode {
-    /** represent the action Node */
-    protected ActionNode actionNode;
-
-    public ActionNode() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public ActionNode(ActionNode actionNode) {
-        this.actionNode = actionNode;
-    }
-
-    @Override
-    public void execute(Robot robot) {
-        // TODO Auto-generated method stub
-
-    }
-
-}
-
-class TurnLNode extends ActionNode implements RobotProgramNode {
-
-    public TurnLNode() {
-        // TODO Auto-generated constructor stub
-    }
-
-    TurnLNode(TurnLNode actionLNode) {
-        super();
-
-    }
-
-    @Override
-    public void execute(Robot robot) {
-        robot.turnLeft();
-    }
-
-    @Override
-    public String toString() {
-        // return super.toString();
-        return "turnLeft";
-    }
-}
-
-class TurnRNode extends ActionNode implements RobotProgramNode {
-
-    @Override
-    public void execute(Robot robot) {
-        robot.turnRight();
-    }
-
-}
-
-class TakeFuelNode extends ActionNode implements RobotProgramNode {
-    @Override
-    public void execute(Robot robot) {
-        robot.takeFuel();
-    }
-}
-
-class WaitNode extends ActionNode implements RobotProgramNode {
-
-    @Override
-    public void execute(Robot robot) {
-        try {
-            robot.wait();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-}
-
-class LoopNode extends ActionNode implements RobotProgramNode {
-
-    private RobotProgramNode block;
-
-    public LoopNode(RobotProgramNode block) {
-        this.block = block;
-    }
-
-    @Override
-    public void execute(Robot robot) {
-        while (true) {
-            block.execute(robot);
-        }
-    }
-
-    public String toString() {
-        // return "loop" + this.block;
-        return "loop {\n" + this.block + "\n}";
-    }
-}
-
-class BlockNode implements RobotProgramNode {
-    private List<RobotProgramNode> actions_program_node;
-
-    public BlockNode(List<RobotProgramNode> actions_nodeList) {
-        this.actions_program_node = actions_nodeList;
-    }
-
-    /**
-     * Let the specificied robot to perform/execute the list of actions in order
-     * 
-     * @see RobotProgramNode#execute(Robot)
-     */
-    @Override
-    public void execute(Robot robot) {
-        //
-        for (RobotProgramNode robotProgramNode : actions_program_node) {
-            robotProgramNode.execute(robot);
-        }
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("{\n");
-        for (RobotProgramNode robotProgramNode : actions_program_node) {
-            sb.append("\t");
-            sb.append(robotProgramNode.toString());
-            sb.append("\n");
-
-        }
-        sb.append("\n}");
-        return sb.toString();
-        // return super.toString();
-
-    }
-
-    /**
-     * Get the actions_program_node.
-     *
-     * @return the actions_program_node
-     */
-    public List<RobotProgramNode> getActions_program_node() {
-        return actions_program_node;
-    }
-}
