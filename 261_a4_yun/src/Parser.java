@@ -129,7 +129,7 @@ public class Parser {
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!"
-                 + "\nNext token is :" + scanner.hasNext(),
+                 + "\nNext token is :" + (scanner.hasNext() ? scanner.next() : null),
                     scanner);
             return null;
         }
@@ -203,6 +203,11 @@ public class Parser {
         // check if it is the closing '}'
         if (!checkFor(CLOSEBRACE, scanner)) {
             fail("'}' is missing, so invalid Block", scanner);
+        }
+
+        // check if it is empty
+        if (stmtNodes.isEmpty()) {
+            fail("no statement inside BLOCK ", scanner);
         }
         return new BLOCK(stmtNodes);
     }
