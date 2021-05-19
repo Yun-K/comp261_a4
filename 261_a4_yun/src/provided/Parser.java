@@ -130,7 +130,7 @@ public class Parser {
         }
         // expected token is missing! execute code below
         else {
-            fail("Next token can't start, it is invalid!"
+            fail("Next token can't start since it is invalid for STMT!"
                  + "\nNext token is :" + scanner.hasNext(),
                     scanner);
             return null;
@@ -155,18 +155,40 @@ public class Parser {
 
         // do the check one by one
         if (scanner.hasNext("move")) {
-            parseMove(scanner);
-
+            RobotProgramNode node = parseMove(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("; is missing after move", scanner);
+            }
+            return node;
         } else if (scanner.hasNext("turnL")) {
-
+            RobotProgramNode node = parseTurnL(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("; is missing after turnL", scanner);
+            }
+            return node;
         } else if (scanner.hasNext("turnR")) {
+            RobotProgramNode node = parseTurnR(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("; is missing after turnR", scanner);
+            }
+            return node;
 
         } else if (scanner.hasNext("takeFuel")) {
+            RobotProgramNode node = parseTakeFuel(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("; is missing after takeFuel", scanner);
+            }
+            return node;
 
         } else if (scanner.hasNext("wait")) {
-
+            RobotProgramNode node = parseWait(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("; is missing after wait", scanner);
+            }
+            return node;
         }
 
+        fail("Didn't find the valid Actions that can be parsed", scanner);
         return null;
     }
 
@@ -175,13 +197,34 @@ public class Parser {
     }
 
     /*
-     * 
+     * ACT:
      */
     private static RobotProgramNode parseMove(Scanner scanner) {
         // TODO Auto-generated method stub
         return null;
 
     }
+
+    private static RobotProgramNode parseWait(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static RobotProgramNode parseTakeFuel(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static RobotProgramNode parseTurnR(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static RobotProgramNode parseTurnL(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     // utility methods for the parser
 
     /**

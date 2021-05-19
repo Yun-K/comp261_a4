@@ -60,7 +60,7 @@ class TurnLNode extends ACT implements RobotProgramNode {
     @Override
     public String toString() {
         // return super.toString();
-        return "turnLeft";
+        return "turnL";
     }
 }
 
@@ -74,7 +74,7 @@ class TurnRNode extends ACT implements RobotProgramNode {
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return "turnRight";
+        return "turnR";
     }
 
 }
