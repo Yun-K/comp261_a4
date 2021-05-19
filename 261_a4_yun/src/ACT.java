@@ -114,7 +114,11 @@ class TakeFuelNode extends ACT {
 
 // TODO
 class WaitNode extends ACT {
+    public WaitNode() {
+        super();
+    }
 
+    // }
     @Override
     public void execute(Robot robot) {
         robot.idleWait();

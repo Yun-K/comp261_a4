@@ -1,5 +1,4 @@
 
-
 import java.util.List;
 
 /**
@@ -10,6 +9,7 @@ import java.util.List;
  * @version
  */
 public class PROG implements RobotProgramNode {
+    // done
 
     private List<RobotProgramNode> stmt_node_list;
 
@@ -32,11 +32,6 @@ public class PROG implements RobotProgramNode {
         return sb.toString();
     }
 
-    /**
-     * Execute all the node from the list.
-     * 
-     * @see provided.RobotProgramNode#execute(provided.Robot)
-     */
     @Override
     public void execute(Robot robot) {
         for (RobotProgramNode robotProgramNode : stmt_node_list) {

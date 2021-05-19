@@ -1,10 +1,10 @@
 
-
 public class LOOP extends STMT implements RobotProgramNode {
 
     private RobotProgramNode block;
 
     public LOOP(RobotProgramNode block) {
+        super(block);
         this.block = block;
     }
 

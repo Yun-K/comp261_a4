@@ -135,17 +135,17 @@ public class Parser {
         }
     }
 
-    static RobotProgramNode parseLOOP(Scanner scanner) {
+    public static RobotProgramNode parseLOOP(Scanner scanner) {// DONE
         boolean isMatch = checkFor(LOOP_PATTERN, scanner);
         if (!isMatch) {
             fail("The 'loop' is missing", scanner);
         }
-        // is Mathched!
+        // is Mathched, so return new LOOP
         return new LOOP(parseBLOCK(scanner));
 
     }
 
-    static RobotProgramNode parseACT(Scanner scanner) {
+    public static RobotProgramNode parseACT(Scanner scanner) {
         boolean isMatched = scanner.hasNext(ACT_PATTERN);
         if (!isMatched) {
             fail("NOt a valid ACTION", scanner);
@@ -190,37 +190,69 @@ public class Parser {
         return null;
     }
 
-    static RobotProgramNode parseBLOCK(Scanner scanner) {
-        return null;
+    static RobotProgramNode parseBLOCK(Scanner scanner) {// DONE
+        if (!checkFor(OPENBRACE, scanner)) {
+            fail("'{' is missing, so invalid Block", scanner);
+        }
+        // add all remaining stmt into the list until find '}'
+        List<RobotProgramNode> stmtNodes = new ArrayList<RobotProgramNode>();
+        while (!scanner.hasNext(CLOSEBRACE)) {
+            stmtNodes.add(parseSTMT(scanner));
+        }
+
+        // check if it is the closing '}'
+        if (!checkFor(CLOSEBRACE, scanner)) {
+            fail("'}' is missing, so invalid Block", scanner);
+        }
+        return new BLOCK(stmtNodes);
     }
 
     /*
      * ACT:
      */
-    private static RobotProgramNode parseMove(Scanner scanner) {
+    private static RobotProgramNode parseMove(Scanner scanner) {// TODO
+        boolean isValid = checkFor("move", scanner);
+        if (!isValid) {
+            fail("'move' is not found", scanner);
+        }
         // TODO Auto-generated method stub
-        return null;
+        return new MoveNode();
 
     }
 
-    private static RobotProgramNode parseWait(Scanner scanner) {
-        // TODO Auto-generated method stub
-        return null;
+    private static RobotProgramNode parseWait(Scanner scanner) {// TODO
+        boolean isValid = checkFor("wait", scanner);
+        if (!isValid) {
+            fail("'wait' is not found", scanner);
+        }
+        return new WaitNode();
     }
 
-    private static RobotProgramNode parseTakeFuel(Scanner scanner) {
+    private static RobotProgramNode parseTakeFuel(Scanner scanner) {// DONE
+        boolean isValid = checkFor("takeFuel", scanner);
+        if (!isValid) {
+            fail("'takeFuel' is not found", scanner);
+        }
         // TODO Auto-generated method stub
-        return null;
+        return new TakeFuelNode();
     }
 
-    private static RobotProgramNode parseTurnR(Scanner scanner) {
+    private static RobotProgramNode parseTurnR(Scanner scanner) {// done
+        boolean isValid = checkFor("turnR", scanner);
+        if (!isValid) {
+            fail("'turnR' is not found", scanner);
+        }
         // TODO Auto-generated method stub
-        return null;
+        return new TurnRNode();
     }
 
     private static RobotProgramNode parseTurnL(Scanner scanner) {
+        boolean isValid = checkFor("turnL", scanner);
+        if (!isValid) {
+            fail("'turnL' is not found", scanner);
+        }
         // TODO Auto-generated method stub
-        return null;
+        return new TurnLNode();
     }
 
     // utility methods for the parser
