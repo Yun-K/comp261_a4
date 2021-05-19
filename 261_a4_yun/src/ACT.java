@@ -1,10 +1,10 @@
 
-
-public abstract class ACT implements RobotProgramNode {
+public abstract class ACT extends STMT implements RobotProgramNode {
     /** represent the action Node */
     protected ACT actionNode;
 
     public ACT() {
+        super();
         // TODO Auto-generated constructor stub
     }
 
@@ -112,16 +112,18 @@ class TakeFuelNode extends ACT {
     }
 }
 
-class WaitNode extends ACT implements RobotProgramNode {
+// TODO
+class WaitNode extends ACT {
 
     @Override
     public void execute(Robot robot) {
-        try {
-            robot.wait();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        robot.idleWait();
+        // try {
+        // robot.wait();
+        // } catch (InterruptedException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
     }
 
     @Override
