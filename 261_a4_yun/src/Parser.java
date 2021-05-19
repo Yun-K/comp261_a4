@@ -1,4 +1,3 @@
-package provided;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,7 +116,6 @@ public class Parser {
         }
 
         s.close();// close to save resources
-        // return PROG
         return new PROG(allProgramNodes);
     }
 
@@ -157,33 +155,33 @@ public class Parser {
         if (scanner.hasNext("move")) {
             RobotProgramNode node = parseMove(scanner);
             if (!checkFor(";", scanner)) {
-                fail("; is missing after move", scanner);
+                fail("';' is missing after move", scanner);
             }
             return node;
         } else if (scanner.hasNext("turnL")) {
             RobotProgramNode node = parseTurnL(scanner);
             if (!checkFor(";", scanner)) {
-                fail("; is missing after turnL", scanner);
+                fail("';' is missing after turnL", scanner);
             }
             return node;
         } else if (scanner.hasNext("turnR")) {
             RobotProgramNode node = parseTurnR(scanner);
             if (!checkFor(";", scanner)) {
-                fail("; is missing after turnR", scanner);
+                fail("';' is missing after turnR", scanner);
             }
             return node;
 
         } else if (scanner.hasNext("takeFuel")) {
             RobotProgramNode node = parseTakeFuel(scanner);
             if (!checkFor(";", scanner)) {
-                fail("; is missing after takeFuel", scanner);
+                fail("';' is missing after takeFuel", scanner);
             }
             return node;
 
         } else if (scanner.hasNext("wait")) {
             RobotProgramNode node = parseWait(scanner);
             if (!checkFor(";", scanner)) {
-                fail("; is missing after wait", scanner);
+                fail("';' is missing after wait", scanner);
             }
             return node;
         }

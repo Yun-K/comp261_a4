@@ -1,6 +1,6 @@
-package provided;
 
-public class LOOP extends ACT implements RobotProgramNode {
+
+public class LOOP extends STMT implements RobotProgramNode {
 
     private RobotProgramNode block;
 

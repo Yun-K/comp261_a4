@@ -1,4 +1,4 @@
-package provided;
+
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;

@@ -1,4 +1,4 @@
-package provided;
+
 
 public abstract class ACT implements RobotProgramNode {
     /** represent the action Node */
@@ -20,8 +20,8 @@ public abstract class ACT implements RobotProgramNode {
 
 }
 
-class MoveNode extends ACT implements RobotProgramNode {
-
+// TODO
+class MoveNode extends ACT {
     public MoveNode() {
         super();
     }
@@ -42,6 +42,7 @@ class MoveNode extends ACT implements RobotProgramNode {
     }
 }
 
+// done!
 class TurnLNode extends ACT implements RobotProgramNode {
 
     public TurnLNode() {
@@ -64,7 +65,16 @@ class TurnLNode extends ACT implements RobotProgramNode {
     }
 }
 
+// done
 class TurnRNode extends ACT implements RobotProgramNode {
+
+    TurnRNode() {
+        super();
+    }
+
+    TurnRNode(TurnRNode node) {
+        super(node);
+    }
 
     @Override
     public void execute(Robot robot) {
@@ -73,13 +83,23 @@ class TurnRNode extends ACT implements RobotProgramNode {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
         return "turnR";
     }
 
 }
 
-class TakeFuelNode extends ACT implements RobotProgramNode {
+// done
+class TakeFuelNode extends ACT {
+    public TakeFuelNode() {
+
+        super();
+    }
+
+    public TakeFuelNode(TakeFuelNode act_node) {
+
+        super(act_node);
+    }
+
     @Override
     public void execute(Robot robot) {
         robot.takeFuel();
