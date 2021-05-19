@@ -88,6 +88,13 @@ public class Parser {
 
     static Pattern CLOSEBRACE = Pattern.compile("\\}");
 
+    /** my pattern: */
+    // static Pattern STMT_PATTERN=Pattern.compile("")
+    final static Pattern ACT_PATTERN = Pattern.compile(
+            "move|turnL|turnR|takeFuel|wait");
+
+    final static Pattern LOOP_PATTERN = Pattern.compile("loop");
+
     /**
      * See assignment handout for the grammar.
      * <p>
@@ -100,27 +107,6 @@ public class Parser {
      * LOOP ::= "loop" BLOCK
      * <p>
      * BLOCK ::= "{" STMT+ "}"
-     * 
-     * <p>
-     * Example:
-     * <p>
-     * move; move; move; turnL ;
-     * <p>
-     * wait;
-     * <p>
-     * loop{
-     * <p>
-     * move; move; turnR;
-     * <p>
-     * move; move; turnR;
-     * <p>
-     * move; turnR;
-     * <p>
-     * move; move; turnR;
-     * <p>
-     * takeFuel;
-     * <p>
-     * }
      */
     static RobotProgramNode parseProgram(Scanner s) {
         // THE PARSER GOES HERE: TODO
@@ -128,22 +114,59 @@ public class Parser {
         // loop until the end
         while (s.hasNext()) {
             allProgramNodes.add(parseSTMT(s));
-            s.next();// go to scan next
         }
-        ACT actNode = new TurnLNode();
 
-        return null;
+        s.close();// close to save resources
+        // return PROG
+        return new PROG(allProgramNodes);
     }
 
     static RobotProgramNode parseSTMT(Scanner scanner) {
-        return null;
-    }
-
-    static RobotProgramNode parseACT(Scanner scanner) {
-        return null;
+        // use hasNext("") to peek nextToken
+        if (scanner.hasNext(LOOP_PATTERN)) {
+            return parseLOOP(scanner);
+        } else if (scanner.hasNext(ACT_PATTERN)) {
+            return parseACT(scanner);
+        }
+        // expected token is missing! execute code below
+        else {
+            fail("Next token can't start, it is invalid!"
+                 + "\nNext token is :" + scanner.hasNext(),
+                    scanner);
+            return null;
+        }
     }
 
     static RobotProgramNode parseLOOP(Scanner scanner) {
+        boolean isMatch = checkFor(LOOP_PATTERN, scanner);
+        if (!isMatch) {
+            fail("The 'loop' is missing", scanner);
+        }
+        // is Mathched!
+        return new LOOP(parseBLOCK(scanner));
+
+    }
+
+    static RobotProgramNode parseACT(Scanner scanner) {
+        boolean isMatched = scanner.hasNext(ACT_PATTERN);
+        if (!isMatched) {
+            fail("NOt a valid ACTION", scanner);
+        }
+
+        // do the check one by one
+        if (scanner.hasNext("move")) {
+            parseMove(scanner);
+
+        } else if (scanner.hasNext("turnL")) {
+
+        } else if (scanner.hasNext("turnR")) {
+
+        } else if (scanner.hasNext("takeFuel")) {
+
+        } else if (scanner.hasNext("wait")) {
+
+        }
+
         return null;
     }
 
@@ -151,6 +174,14 @@ public class Parser {
         return null;
     }
 
+    /*
+     * 
+     */
+    private static RobotProgramNode parseMove(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+
+    }
     // utility methods for the parser
 
     /**
