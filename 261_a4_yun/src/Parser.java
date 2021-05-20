@@ -90,7 +90,7 @@ public class Parser {
     /** my pattern: */
     // static Pattern STMT_PATTERN=Pattern.compile("")
     final static Pattern ACT_PATTERN = Pattern.compile(
-            "move|turnL|turnR|takeFuel|wait");
+            "move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
@@ -125,7 +125,17 @@ public class Parser {
             return parseLOOP(scanner);
         } else if (scanner.hasNext(ACT_PATTERN)) {
             return parseACT(scanner);
+        } else if (scanner.hasNext("if")) {
+            return parseIF(scanner);
+
+        } else if (scanner.hasNext("while")) {
+            return parseWHILE(scanner);
+
         }
+        // else if (scanner.hasNext()) {
+        //
+        //
+        // }
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!"
@@ -145,7 +155,7 @@ public class Parser {
 
     }
 
-    public static RobotProgramNode parseACT(Scanner scanner) {
+    public static ACT parseACT(Scanner scanner) {
         boolean isMatched = scanner.hasNext(ACT_PATTERN);
         if (!isMatched) {
             fail("NOt a valid ACTION", scanner);
@@ -153,33 +163,33 @@ public class Parser {
 
         // do the check one by one
         if (scanner.hasNext("move")) {
-            RobotProgramNode node = parseMove(scanner);
+            MoveNode node = parseMove(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after move", scanner);
             }
             return node;
         } else if (scanner.hasNext("turnL")) {
-            RobotProgramNode node = parseTurnL(scanner);
+            TurnLNode node = parseTurnL(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after turnL", scanner);
             }
             return node;
         } else if (scanner.hasNext("turnR")) {
-            RobotProgramNode node = parseTurnR(scanner);
+            TurnRNode node = parseTurnR(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after turnR", scanner);
             }
             return node;
 
         } else if (scanner.hasNext("takeFuel")) {
-            RobotProgramNode node = parseTakeFuel(scanner);
+            TakeFuelNode node = parseTakeFuel(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after takeFuel", scanner);
             }
             return node;
 
         } else if (scanner.hasNext("wait")) {
-            RobotProgramNode node = parseWait(scanner);
+            WaitNode node = parseWait(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after wait", scanner);
             }
@@ -190,7 +200,45 @@ public class Parser {
         return null;
     }
 
-    static RobotProgramNode parseBLOCK(Scanner scanner) {// DONE
+    private static WHILE parseWHILE(Scanner scanner) {
+        boolean isMatch = checkFor(LOOP_PATTERN, scanner);
+        if (!isMatch) {
+            fail("The 'while' is missing", scanner);
+        }
+
+        // is Mathched, so return new LOOP
+        return new WHILE(parseBLOCK(scanner));
+    }
+
+    private static IF parseIF(Scanner scanner) {
+        boolean isMatch_if = checkFor("if", scanner);
+        if (!isMatch_if) {
+            fail("'if' is missing", scanner);
+        }
+
+        // check if it has the '('
+        if (!checkFor(OPENPAREN, scanner)) {
+            fail("'(' is missing", scanner);
+        }
+
+        /*
+         * check the CONDITION
+         */
+
+        // check if it has the ')'
+        if (!checkFor(CLOSEPAREN, scanner)) {
+            fail("')' is missing", scanner);
+        }
+
+        /*
+         * check the BLOCK
+         */
+
+        // is Mathched, so return new LOOP
+        return new IF(parseBLOCK(scanner));
+    }
+
+    static BLOCK parseBLOCK(Scanner scanner) {// DONE
         if (!checkFor(OPENBRACE, scanner)) {
             fail("'{' is missing, so invalid Block", scanner);
         }
@@ -215,7 +263,7 @@ public class Parser {
     /*
      * ACT:
      */
-    private static RobotProgramNode parseMove(Scanner scanner) {// TODO
+    private static MoveNode parseMove(Scanner scanner) {// TODO
         boolean isValid = checkFor("move", scanner);
         if (!isValid) {
             fail("'move' is not found", scanner);
@@ -225,7 +273,7 @@ public class Parser {
 
     }
 
-    private static RobotProgramNode parseWait(Scanner scanner) {// TODO
+    private static WaitNode parseWait(Scanner scanner) {// TODO
         boolean isValid = checkFor("wait", scanner);
         if (!isValid) {
             fail("'wait' is not found", scanner);
@@ -233,7 +281,7 @@ public class Parser {
         return new WaitNode();
     }
 
-    private static RobotProgramNode parseTakeFuel(Scanner scanner) {// DONE
+    private static TakeFuelNode parseTakeFuel(Scanner scanner) {// DONE
         boolean isValid = checkFor("takeFuel", scanner);
         if (!isValid) {
             fail("'takeFuel' is not found", scanner);
@@ -242,7 +290,7 @@ public class Parser {
         return new TakeFuelNode();
     }
 
-    private static RobotProgramNode parseTurnR(Scanner scanner) {// done
+    private static TurnRNode parseTurnR(Scanner scanner) {// done
         boolean isValid = checkFor("turnR", scanner);
         if (!isValid) {
             fail("'turnR' is not found", scanner);
@@ -251,7 +299,7 @@ public class Parser {
         return new TurnRNode();
     }
 
-    private static RobotProgramNode parseTurnL(Scanner scanner) {
+    private static TurnLNode parseTurnL(Scanner scanner) {
         boolean isValid = checkFor("turnL", scanner);
         if (!isValid) {
             fail("'turnL' is not found", scanner);
