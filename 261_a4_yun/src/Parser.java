@@ -94,6 +94,13 @@ public class Parser {
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
+    final static Pattern RELOP_PATTERN = Pattern.compile("lt|gt|eq");
+
+    final static Pattern SEN_PATTERN = Pattern
+            .compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
+
+    final static Pattern NUM_PATTERN = Pattern.compile("-?[0-9]+");
+
     /**
      * See assignment handout for the grammar.
      * <p>
@@ -136,6 +143,7 @@ public class Parser {
         //
         //
         // }
+
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!"
@@ -201,10 +209,28 @@ public class Parser {
     }
 
     private static WHILE parseWHILE(Scanner scanner) {
-        boolean isMatch = checkFor(LOOP_PATTERN, scanner);
-        if (!isMatch) {
-            fail("The 'while' is missing", scanner);
+        boolean isMatch_while = checkFor("while", scanner);
+        if (!isMatch_while) {
+            fail("'while' is missing", scanner);
         }
+
+        // check if it has the '('
+        if (!checkFor(OPENPAREN, scanner)) {
+            fail("'(' is missing", scanner);
+        }
+
+        /*
+         * check and parse the CONDITION
+         */
+
+        // check if it has the ')'
+        if (!checkFor(CLOSEPAREN, scanner)) {
+            fail("')' is missing", scanner);
+        }
+
+        /*
+         * check the BLOCK
+         */
 
         // is Mathched, so return new LOOP
         return new WHILE(parseBLOCK(scanner));
@@ -224,6 +250,15 @@ public class Parser {
         /*
          * check the CONDITION
          */
+        // add all remaining stmt into the list until find '}'
+        List<RobotProgramNode> conditions = new ArrayList<RobotProgramNode>();
+        while (!scanner.hasNext(CLOSEBRACE)) {
+            conditions.add(parseCOND(scanner));
+        }
+        // check if it is empty
+        if (conditions.isEmpty()) {
+            fail("no codition found inside IF ", scanner);
+        }
 
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
@@ -247,17 +282,22 @@ public class Parser {
         while (!scanner.hasNext(CLOSEBRACE)) {
             stmtNodes.add(parseSTMT(scanner));
         }
+        // check if it is empty
+        if (stmtNodes.isEmpty()) {
+            fail("no statement inside BLOCK ", scanner);
+        }
 
         // check if it is the closing '}'
         if (!checkFor(CLOSEBRACE, scanner)) {
             fail("'}' is missing, so invalid Block", scanner);
         }
 
-        // check if it is empty
-        if (stmtNodes.isEmpty()) {
-            fail("no statement inside BLOCK ", scanner);
-        }
         return new BLOCK(stmtNodes);
+    }
+
+    private static RobotProgramNode parseCOND(Scanner scanner) {// TODO
+
+        return null;
     }
 
     /*
@@ -268,6 +308,7 @@ public class Parser {
         if (!isValid) {
             fail("'move' is not found", scanner);
         }
+
         // TODO Auto-generated method stub
         return new MoveNode();
 
@@ -299,7 +340,7 @@ public class Parser {
         return new TurnRNode();
     }
 
-    private static TurnLNode parseTurnL(Scanner scanner) {
+    private static TurnLNode parseTurnL(Scanner scanner) {// done
         boolean isValid = checkFor("turnL", scanner);
         if (!isValid) {
             fail("'turnL' is not found", scanner);
