@@ -250,8 +250,8 @@ public class Parser {
         /*
          * check the CONDITION
          */
-        // add all remaining stmt into the list until find '}'
-        List<RobotProgramNode> conditions = new ArrayList<RobotProgramNode>();
+        // add all remaining cond into the list until find '}'
+        List<COND> conditions = new ArrayList<>();
         while (!scanner.hasNext(CLOSEBRACE)) {
             conditions.add(parseCOND(scanner));
         }
@@ -269,8 +269,18 @@ public class Parser {
          * check the BLOCK
          */
 
+        // add all remaining block into the list until find '}'
+        List<BLOCK> block = new ArrayList<>();
+        while (!scanner.hasNext(CLOSEBRACE)) {
+            block.add(parseBLOCK(scanner));
+        }
+        // check if it is empty
+        if (conditions.isEmpty()) {
+            fail("no codition found inside IF ", scanner);
+        }
+
         // is Mathched, so return new LOOP
-        return new IF(parseBLOCK(scanner));
+        return new IF(conditions, block);
     }
 
     static BLOCK parseBLOCK(Scanner scanner) {// DONE
@@ -295,7 +305,7 @@ public class Parser {
         return new BLOCK(stmtNodes);
     }
 
-    private static RobotProgramNode parseCOND(Scanner scanner) {// TODO
+    private static COND parseCOND(Scanner scanner) {// TODO
 
         return null;
     }
