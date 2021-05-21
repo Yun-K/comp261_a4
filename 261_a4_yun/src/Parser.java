@@ -164,6 +164,7 @@ public class Parser {
             fail("NOt a valid ACTION", scanner);
         }
 
+        // ACT node = null;
         // do the check one by one
         if (scanner.hasNext("move")) {
             MoveNode node = parseMove(scanner);
@@ -198,11 +199,27 @@ public class Parser {
             }
             return node;
         }else if (scanner.hasNext("turnAround")) {
-            TurnAround node = null;//parseTurnAround(scanner);
+            scanner.next();
+            turnAround node = new turnAround();
+            if (!checkFor(";", scanner)) {
+                fail("';' is missing after wait", scanner);
+            }
+            return node;
         }else if (scanner.hasNext("shieldOn")){
 
+            scanner.next();
+            shieldOn node  = new shieldOn();
+            if (!checkFor(";", scanner)) {
+                fail("';' is missing after wait", scanner);
+            }
+            return node;
         }else if (scanner.hasNext("shieldOff")){
-
+            scanner.next();
+            shieldOff node = new shieldOff();
+            if (!checkFor(";", scanner)) {
+                fail("';' is missing after wait", scanner);
+            }
+            return node;
         }//else if (scanner.hasNext(""))
 
         fail("Didn't find the valid Actions that can be parsed", scanner);
@@ -489,7 +506,7 @@ public class Parser {
             }
 
             return sen;
-        } else if (scanner.hasNext(NUMPAT)) {
+        } else if (scanner.hasNext(NUM_PATTERN)) {
             NUM num = new NUM(Integer.valueOf(scanner.next()));
             return num;
         }

@@ -1,10 +1,10 @@
 
 public abstract class RELOP implements COND {
-    protected EXPR sensorNode, numExprNode;
+    protected EXPR childNode1, childNode2;
 
     public RELOP(EXPR child1, EXPR child2) {
-        sensorNode = child1;
-        numExprNode = child2;
+        childNode1 = child1;
+        childNode2 = child2;
     }
 
     @Override
@@ -16,7 +16,7 @@ public abstract class RELOP implements COND {
      * @return the sensorNode
      */
     public EXPR getSensorNode() {
-        return sensorNode;
+        return childNode1;
     }
 
     /**
@@ -25,7 +25,7 @@ public abstract class RELOP implements COND {
      * @return the numExprNode
      */
     public EXPR getNumExprNode() {
-        return numExprNode;
+        return childNode2;
     }
 
 }
@@ -52,9 +52,9 @@ class lt extends RELOP {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("lt(")
-                .append(sensorNode.toString())
+                .append(childNode1.toString())
                 .append(",")
-                .append(numExprNode.toString())
+                .append(childNode2.toString())
                 .append(")");
         return sb.toString();
 
@@ -62,7 +62,7 @@ class lt extends RELOP {
 
     @Override
     public boolean evaluate(Robot robot) {
-        return sensorNode.evaluate(robot) < numExprNode.evaluate(robot) ? true : false;
+        return childNode1.evaluate(robot) < childNode2.evaluate(robot) ? true : false;
     }
 }
 
@@ -81,15 +81,15 @@ class Gt extends RELOP {
 
     @Override
     public boolean evaluate(Robot robot) {
-        return sensorNode.evaluate(robot) > numExprNode.evaluate(robot) ? true : false;
+        return childNode1.evaluate(robot) > childNode2.evaluate(robot) ? true : false;
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("gt(")
-                .append(sensorNode.toString())
+                .append(childNode1.toString())
                 .append(",")
-                .append(numExprNode.toString())
+                .append(childNode2.toString())
                 .append(")");
         return sb.toString();
 
@@ -112,15 +112,15 @@ class Eq extends RELOP {
 
     @Override
     public boolean evaluate(Robot robot) {
-        return sensorNode.evaluate(robot) == numExprNode.evaluate(robot) ? true : false;
+        return childNode1.evaluate(robot) == childNode2.evaluate(robot) ? true : false;
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("eq(")
-                .append(sensorNode.toString())
+                .append(childNode1.toString())
                 .append(",")
-                .append(numExprNode.toString())
+                .append(childNode2.toString())
                 .append(")");
         return sb.toString();
 

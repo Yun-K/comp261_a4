@@ -31,12 +31,12 @@ public class IF extends STMT implements RobotProgramNode {
 
     @Override
     public void execute(Robot robot) {
-        for (COND cond : CONDITION) {
-            // check if the condition is met
-            if (cond.evaluate(robot)) {
-                this.singleBlock.execute(robot);
-            }
+        // for (COND cond : CONDITION) {
+        // check if the condition is met
+        if (singleCOND.evaluate(robot)) {
+            this.singleBlock.execute(robot);
         }
+        // }
     }
 
     @Override
