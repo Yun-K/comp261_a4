@@ -30,7 +30,7 @@ class FuelLeftNode extends SEN {
     }
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         return robot.getFuel();
     }
 }
@@ -51,10 +51,10 @@ class OppLR extends SEN {
      * @return:INFINITY if there isn't a second robot, -ve if to the left, +veif to the right
      *                  and 0 if directly in front or behind
      * 
-     * @see EXPR#getValue(Robot)
+     * @see EXPR#evaluate(Robot)
      */
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         return robot.getOpponentLR();
     }
 
@@ -67,7 +67,7 @@ class OppLR extends SEN {
 class OppFB extends SEN {
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -82,7 +82,7 @@ class OppFB extends SEN {
 class NumBarrels extends SEN {
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -97,7 +97,7 @@ class NumBarrels extends SEN {
 class BarrelLR extends SEN {
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -112,8 +112,9 @@ class BarrelLR extends SEN {
 class BarrelFB extends SEN {
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         // TODO Auto-generated method stub
+        // return robot.getBarrelFB(n);
         return 0;
     }
 
@@ -124,17 +125,15 @@ class BarrelFB extends SEN {
     }
 }
 
-class wallDist extends SEN {
+class WallDist extends SEN {
 
     @Override
-    public int getValue(Robot robot) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int evaluate(Robot robot) {
+        return robot.getDistanceToWall();
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return "wallDist:";
     }
 }

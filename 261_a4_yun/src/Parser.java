@@ -325,6 +325,8 @@ public class Parser {
         } else if (scanner.hasNext("eq")) {
             return parseEQ(scanner);
         }
+        // below are stage 2
+        // else if() {}
         // invalid
         else {
             fail("Didn't find the valid cond that can be parsed", scanner);

@@ -33,7 +33,7 @@ public class IF extends STMT implements RobotProgramNode {
     public void execute(Robot robot) {
         for (COND cond : CONDITION) {
             // check if the condition is met
-            if (cond.compute(robot)) {
+            if (cond.evaluate(robot)) {
                 this.singleBlock.execute(robot);
             }
         }

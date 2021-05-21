@@ -5,7 +5,7 @@
  * @author Yun Zhou 300442776
  * @version
  */
-public interface COND extends RobotProgramNode {
+public interface COND {// extends RobotProgramNode {
     /**
      * Description: <br/>
      * Check if the CONDITION is met, if the condition is true, return true. otherwise return
@@ -18,17 +18,7 @@ public interface COND extends RobotProgramNode {
      * @param robot
      * @return true if the Sensor is less than numNode
      */
-    public abstract boolean compute(Robot robot);
-
-    /**
-     * Should not execute the COND.execute() as well as the subClasses.
-     * 
-     * @see RobotProgramNode#execute(Robot)
-     */
-    @Override
-    public default void execute(Robot robot) {
-        assert false;
-    }
+    public abstract boolean evaluate(Robot robot);
 
 }
 
@@ -60,7 +50,7 @@ class lt implements COND {
     }
 
     @Override
-    public boolean compute(Robot robot) {
-        return this.sensorNode.compute(robot) < this.numExprNode.compute(robot) ? true : false;
+    public boolean evaluate(Robot robot) {
+        return this.sensorNode.evaluate(robot) < this.numExprNode.evaluate(robot) ? true : false;
     }
 }

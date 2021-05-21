@@ -6,6 +6,8 @@
  * @version
  */
 public abstract class EXPR {
+    protected Robot robot;
+
     /**
      * Description: <br/>
      * This method will return the integer val that the specificied Robot hold.
@@ -20,7 +22,7 @@ public abstract class EXPR {
      * @param robot
      * @return
      */
-    public abstract int getValue(Robot robot);
+    public abstract int evaluate(Robot robot);
 
     public abstract String toString();
 
@@ -44,7 +46,7 @@ class NUM extends EXPR {
     }
 
     @Override
-    public int getValue(Robot robot) {
+    public int evaluate(Robot robot) {
         return this.val;
     }
 
