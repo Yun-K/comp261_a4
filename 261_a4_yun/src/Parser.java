@@ -6,9 +6,9 @@ import java.util.regex.*;
 import javax.swing.JFileChooser;
 
 /**
- * The parser and interpreter. The top level parse function, a main method for testing, and
- * several utility methods are provided. You need to implement parseProgram and all the rest of
- * the parser.
+ * The parser and interpreter. The top level parse function, a main method for
+ * testing, and several utility methods are provided. You need to implement
+ * parseProgram and all the rest of the parser.
  */
 public class Parser {
 
@@ -89,15 +89,13 @@ public class Parser {
 
     /** my pattern: */
     // static Pattern STMT_PATTERN=Pattern.compile("")
-    final static Pattern ACT_PATTERN = Pattern
-            .compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
+    final static Pattern ACT_PATTERN = Pattern.compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
     final static Pattern RELOP_PATTERN = Pattern.compile("lt|gt|eq");
 
-    final static Pattern SEN_PATTERN = Pattern
-            .compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
+    final static Pattern SEN_PATTERN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
 
     final static Pattern NUM_PATTERN = Pattern.compile("-?[0-9]+");
 
@@ -145,7 +143,7 @@ public class Parser {
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
-                 + (scanner.hasNext() ? scanner.next() : null), scanner);
+                    + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
         }
     }
@@ -199,7 +197,13 @@ public class Parser {
                 fail("';' is missing after wait", scanner);
             }
             return node;
-        }
+        }else if (scanner.hasNext("turnAround")) {
+            TurnAround node = null;//parseTurnAround(scanner);
+        }else if (scanner.hasNext("shieldOn")){
+
+        }else if (scanner.hasNext("shieldOff")){
+
+        }//else if (scanner.hasNext(""))
 
         fail("Didn't find the valid Actions that can be parsed", scanner);
         return null;
@@ -368,13 +372,20 @@ public class Parser {
             fail("',' is missing ", scanner);
         }
 
-        EXPR NUM = parseExp(scanner);
+        EXPR num = parseExp(scanner);
+        if (!(SEN instanceof SEN)) {
+            fail("The first argument should be the Sen instance", scanner);
+        }
+
+        if (!(num instanceof NUM)) {
+            fail("The second argument should be the instance of NUM", scanner);
+        }
 
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
             fail("')' is missing", scanner);
         }
-        return new Eq(SEN, NUM);
+        return new Eq(SEN, num);
     }
 
     private static RELOP parseGT(Scanner scanner) {
@@ -398,8 +409,8 @@ public class Parser {
         }
 
         EXPR num = parseExp(scanner);
-        if (num instanceof NUM) {
-            
+        if (!(num instanceof NUM)) {
+            fail("The second argument should be the instance of NUM", scanner);
         }
 
         // check if it has the ')'
@@ -430,13 +441,17 @@ public class Parser {
             fail("',' is missing ", scanner);
         }
 
-        EXPR NUM = parseExp(scanner);
+        EXPR num = parseExp(scanner);
 
+        if (!(num instanceof NUM)) {
+            fail("The second argument should be the instance of NUM", scanner);
+        }
+       
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
             fail("')' is missing", scanner);
         }
-        return new lt(SEN, NUM);
+        return new lt(SEN, num);
     }
 
     private static EXPR parseExp(Scanner scanner) {
@@ -446,31 +461,31 @@ public class Parser {
             SEN sen = null;
             String nextToken = scanner.next();
             switch (nextToken) {
-            case "fuelLeft":
-                sen = new FuelLeftNode();
-                break;
-            case "oppLR":
-                sen = new OppLR();
-                break;
-            case "oppFB":
-                sen = new OppFB();
-                break;
-            case "numBarrels":
-                sen = new NumBarrels();
-                break;
-            case "barrelLR":
-                sen = new BarrelLR();
-                break;
-            case "barrelFB":
-                sen = new BarrelFB();
-                break;
+                case "fuelLeft":
+                    sen = new FuelLeftNode();
+                    break;
+                case "oppLR":
+                    sen = new OppLR();
+                    break;
+                case "oppFB":
+                    sen = new OppFB();
+                    break;
+                case "numBarrels":
+                    sen = new NumBarrels();
+                    break;
+                case "barrelLR":
+                    sen = new BarrelLR();
+                    break;
+                case "barrelFB":
+                    sen = new BarrelFB();
+                    break;
 
-            case "wallDist":
-                sen= new WallDist();
-                break;
-            default:// no default , should throw the fail message
-                fail("not a valid SEN!", scanner);
-                break;
+                case "wallDist":
+                    sen = new WallDist();
+                    break;
+                default:// no default , should throw the fail message
+                    fail("not a valid SEN!", scanner);
+                    break;
             }
 
             return sen;
@@ -547,8 +562,8 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern if it matches, it consumes and returns
-     * the token, if not, it throws an exception with an error message
+     * Requires that the next token matches a pattern if it matches, it consumes and
+     * returns the token, if not, it throws an exception with an error message
      */
     static String require(String p, String message, Scanner s) {
         if (s.hasNext(p)) {
@@ -567,9 +582,9 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern (which should only match a number) if it
-     * matches, it consumes and returns the token as an integer if not, it throws an exception
-     * with an error message
+     * Requires that the next token matches a pattern (which should only match a
+     * number) if it matches, it consumes and returns the token as an integer if
+     * not, it throws an exception with an error message
      */
     static int requireInt(String p, String message, Scanner s) {
         if (s.hasNext(p) && s.hasNextInt()) {
@@ -588,8 +603,9 @@ public class Parser {
     }
 
     /**
-     * Checks whether the next token in the scanner matches the specified pattern, if so,
-     * consumes the token and return true. Otherwise returns false without consuming anything.
+     * Checks whether the next token in the scanner matches the specified pattern,
+     * if so, consumes the token and return true. Otherwise returns false without
+     * consuming anything.
      */
     static boolean checkFor(String p, Scanner s) {
         if (s.hasNext(p)) {
