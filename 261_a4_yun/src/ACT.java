@@ -136,3 +136,43 @@ class WaitNode extends ACT {
         return "wait";
     }
 }
+
+class turnAround extends ACT {
+
+    @Override
+    public void execute(Robot robot) {
+        robot.turnAround();
+    }
+
+    @Override
+    public String toString() {
+        return "turnAround";
+    }
+}
+
+class shieldOn extends ACT {
+
+    @Override
+    public void execute(Robot robot) {
+        robot.setShield(true);// ();
+    }
+
+    @Override
+    public String toString() {
+        return "shieldOn";
+    }
+}
+
+class shieldOff extends ACT {
+
+    @Override
+    public void execute(Robot robot) {
+        robot.setShield(false);
+
+    }
+
+    @Override
+    public String toString() {
+        return "shieldOff";
+    }
+}

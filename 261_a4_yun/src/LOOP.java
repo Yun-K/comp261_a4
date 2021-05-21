@@ -1,5 +1,4 @@
-
-public class LOOP extends STMT implements RobotProgramNode {
+public class LOOP extends STMT implements RobotProgramNode {// done
 
     private RobotProgramNode block;
 
