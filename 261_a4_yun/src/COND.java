@@ -21,36 +21,3 @@ public interface COND {// extends RobotProgramNode {
     public abstract boolean evaluate(Robot robot);
 
 }
-
-class lt implements COND {
-
-    private EXPR sensorNode, numExprNode;
-
-    /**
-     * A constructor. It construct a new instance of lt.
-     *
-     * @param sensorNode
-     * @param expressionNode
-     */
-    public lt(EXPR sensorNode, EXPR expressionNode) {
-        super();
-        this.sensorNode = sensorNode;
-        this.numExprNode = expressionNode;
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("lt(")
-                .append(sensorNode.toString())
-                .append(",")
-                .append(numExprNode.toString())
-                .append(")");
-        return sb.toString();
-
-    }
-
-    @Override
-    public boolean evaluate(Robot robot) {
-        return this.sensorNode.evaluate(robot) < this.numExprNode.evaluate(robot) ? true : false;
-    }
-}

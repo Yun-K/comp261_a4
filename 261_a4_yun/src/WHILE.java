@@ -12,7 +12,7 @@ public class WHILE implements RobotProgramNode {
 
     @Override
     public void execute(Robot robot) {
-        while (this.conditions.compute(robot)) {
+        while (this.conditions.evaluate(robot)) {
             this.block.execute(robot);
         }
 
