@@ -129,15 +129,13 @@ public class Parser {
     static RobotProgramNode parseSTMT(Scanner scanner) {
         // use hasNext("") to peek nextToken
         if (scanner.hasNext(LOOP_PATTERN)) {
-            return parseLOOP(scanner);
+            return parseLOOP(scanner);// DONE
         } else if (scanner.hasNext(ACT_PATTERN)) {
             return parseACT(scanner);
         } else if (scanner.hasNext("if")) {
             return parseIF(scanner);
-
         } else if (scanner.hasNext("while")) {
             return parseWHILE(scanner);
-
         }
         // else if (scanner.hasNext()) {
         //
@@ -209,19 +207,24 @@ public class Parser {
     }
 
     private static WHILE parseWHILE(Scanner scanner) {
-        boolean isMatch_while = checkFor("while", scanner);
-        if (!isMatch_while) {
+        boolean isMatch = checkFor("while", scanner);
+        if (!isMatch) {
             fail("'while' is missing", scanner);
         }
-
         // check if it has the '('
         if (!checkFor(OPENPAREN, scanner)) {
             fail("'(' is missing", scanner);
         }
 
         /*
-         * check and parse the CONDITION
+         * check the CONDITION
          */
+        // add all remaining cond into the list until find '}'
+        COND conditions = null;
+        conditions = parseCOND(scanner);
+        if (conditions == null) {
+            fail("The if condition can not be null!", scanner);
+        }
 
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
@@ -232,11 +235,20 @@ public class Parser {
          * check the BLOCK
          */
 
+        // add all remaining block into the list until find '}'
+        BLOCK block = null;
+        block = parseBLOCK(scanner);
+
+        // check if it is empty
+        if (block == null) {
+            fail("no block found for while ", scanner);
+        }
+
         // is Mathched, so return new LOOP
-        return new WHILE(parseBLOCK(scanner));
+        return new WHILE(conditions, block);
     }
 
-    private static IF parseIF(Scanner scanner) {
+    private static IF parseIF(Scanner scanner) {/// TODO
         boolean isMatch_if = checkFor("if", scanner);
         if (!isMatch_if) {
             fail("'if' is missing", scanner);
@@ -251,12 +263,10 @@ public class Parser {
          * check the CONDITION
          */
         // add all remaining cond into the list until find '}'
-        List<COND> conditions = new ArrayList<>();
-        while (!scanner.hasNext(CLOSEBRACE)) {
-            conditions.add(parseCOND(scanner));
-        }
+        COND conditions = null;
+        conditions = parseCOND(scanner);
         // check if it is empty
-        if (conditions.isEmpty()) {
+        if (conditions == null) {
             fail("no codition found inside IF ", scanner);
         }
 
@@ -268,15 +278,11 @@ public class Parser {
         /*
          * check the BLOCK
          */
-
-        // add all remaining block into the list until find '}'
-        List<BLOCK> block = new ArrayList<>();
-        while (!scanner.hasNext(CLOSEBRACE)) {
-            block.add(parseBLOCK(scanner));
-        }
+        BLOCK block = null;
+        block = parseBLOCK(scanner);
         // check if it is empty
-        if (conditions.isEmpty()) {
-            fail("no codition found inside IF ", scanner);
+        if (block == null) {
+            fail("no block found for IF ", scanner);
         }
 
         // is Mathched, so return new LOOP
@@ -287,8 +293,9 @@ public class Parser {
         if (!checkFor(OPENBRACE, scanner)) {
             fail("'{' is missing, so invalid Block", scanner);
         }
+
         // add all remaining stmt into the list until find '}'
-        List<RobotProgramNode> stmtNodes = new ArrayList<RobotProgramNode>();
+        List<RobotProgramNode> stmtNodes = new ArrayList<>();
         while (!scanner.hasNext(CLOSEBRACE)) {
             stmtNodes.add(parseSTMT(scanner));
         }
@@ -306,7 +313,51 @@ public class Parser {
     }
 
     private static COND parseCOND(Scanner scanner) {// TODO
+        if (!scanner.hasNext(RELOP_PATTERN)) {
+            fail("The cond is invalid", scanner);
+        }
 
+        // like parseACT to check RELOP one by one
+        if (scanner.hasNext("lt")) {
+            return parseLT(scanner);
+        } else if (scanner.hasNext("gt")) {
+            return parseGT(scanner);
+        } else if (scanner.hasNext("eq")) {
+            return parseEQ(scanner);
+        }
+        // invalid
+        else {
+            fail("Didn't find the valid cond that can be parsed", scanner);
+            return null;
+        }
+    }
+
+    private static COND parseEQ(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static COND parseGT(Scanner scanner) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static COND parseLT(Scanner scanner) {
+        // scan if it match and go to scan next
+        if (!checkFor("lt", scanner)) {
+            fail("'lt' is missing", scanner);
+        }
+
+        /* then check the '(',sen,num,')' one by one */
+        // check if it has the '('
+        if (!checkFor(OPENPAREN, scanner)) {
+            fail("'(' is missing", scanner);
+        }
+
+        // check if it has the ')'
+        if (!checkFor(CLOSEPAREN, scanner)) {
+            fail("')' is missing", scanner);
+        }
         return null;
     }
 

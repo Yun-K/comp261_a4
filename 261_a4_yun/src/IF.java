@@ -14,12 +14,13 @@ public class IF extends STMT implements RobotProgramNode {
 
     private List<BLOCK> block;
 
-    public IF(RobotProgramNode parseBLOCK) {
-        // TODO Auto-generated constructor stub
-    }
+    private COND singleCOND;
+
+    private BLOCK singleBlock;
 
     public IF(COND parseCOND, BLOCK parseBLOCK) {
-        // TODO Auto-generated constructor stub
+        this.singleBlock = parseBLOCK;
+        this.singleCOND = parseCOND;
     }
 
     public IF(List<COND> conditions, List<BLOCK> block2) {
@@ -30,12 +31,11 @@ public class IF extends STMT implements RobotProgramNode {
 
     @Override
     public void execute(Robot robot) {
-        for (int i = 0; i < this.CONDITION.size(); i++) {
-            COND cond = CONDITION.get(i);
-            // if (cond.) {
-            //
-            // }
-
+        for (COND cond : CONDITION) {
+            // check if the condition is met
+            if (cond.compute(robot)) {
+                this.singleBlock.execute(robot);
+            }
         }
     }
 
