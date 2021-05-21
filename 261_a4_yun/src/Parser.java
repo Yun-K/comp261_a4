@@ -164,66 +164,48 @@ public class Parser {
             fail("NOt a valid ACTION", scanner);
         }
 
-        // ACT node = null;
+        ACT node = null;
         // do the check one by one
         if (scanner.hasNext("move")) {
-            MoveNode node = parseMove(scanner);
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after move", scanner);
-            }
-            return node;
+            // MoveNode
+            node = parseMove(scanner);
         } else if (scanner.hasNext("turnL")) {
-            TurnLNode node = parseTurnL(scanner);
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after turnL", scanner);
-            }
-            return node;
+            // TurnLNode
+            node = parseTurnL(scanner);
         } else if (scanner.hasNext("turnR")) {
-            TurnRNode node = parseTurnR(scanner);
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after turnR", scanner);
-            }
-            return node;
-
+            // TurnRNode
+            node = parseTurnR(scanner);
         } else if (scanner.hasNext("takeFuel")) {
-            TakeFuelNode node = parseTakeFuel(scanner);
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after takeFuel", scanner);
-            }
-            return node;
+            // TakeFuelNode
+            node = parseTakeFuel(scanner);
 
         } else if (scanner.hasNext("wait")) {
-            WaitNode node = parseWait(scanner);
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after wait", scanner);
-            }
-            return node;
-        }else if (scanner.hasNext("turnAround")) {
+            // WaitNode
+            node = parseWait(scanner);
+        } else if (scanner.hasNext("turnAround")) {
             scanner.next();
-            turnAround node = new turnAround();
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after wait", scanner);
-            }
-            return node;
-        }else if (scanner.hasNext("shieldOn")){
+            // turnAround
+            node = new turnAround();
+        } else if (scanner.hasNext("shieldOn")) {
+            scanner.next();
+            // shieldOn
+            node = new shieldOn();
+        } else if (scanner.hasNext("shieldOff")) {
+            scanner.next();
+            // shieldOff
+            node = new shieldOff();
+        } // else if (scanner.hasNext(""))
+        else {
+            fail("Didn't find the valid Actions that can be parsed", scanner);
+            return null;
+        }
 
-            scanner.next();
-            shieldOn node  = new shieldOn();
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after wait", scanner);
-            }
-            return node;
-        }else if (scanner.hasNext("shieldOff")){
-            scanner.next();
-            shieldOff node = new shieldOff();
-            if (!checkFor(";", scanner)) {
-                fail("';' is missing after wait", scanner);
-            }
-            return node;
-        }//else if (scanner.hasNext(""))
+        // do the check and return node
+        if (!checkFor(";", scanner)) {
+            fail("';' is missing this ACT", scanner);
+        }
+        return node;
 
-        fail("Didn't find the valid Actions that can be parsed", scanner);
-        return null;
     }
 
     private static WHILE parseWHILE(Scanner scanner) {
@@ -463,7 +445,7 @@ public class Parser {
         if (!(num instanceof NUM)) {
             fail("The second argument should be the instance of NUM", scanner);
         }
-       
+
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
             fail("')' is missing", scanner);
@@ -524,10 +506,7 @@ public class Parser {
         if (!isValid) {
             fail("'move' is not found", scanner);
         }
-
-        // TODO Auto-generated method stub
         return new MoveNode();
-
     }
 
     private static WaitNode parseWait(Scanner scanner) {// TODO
@@ -543,7 +522,6 @@ public class Parser {
         if (!isValid) {
             fail("'takeFuel' is not found", scanner);
         }
-        // TODO Auto-generated method stub
         return new TakeFuelNode();
     }
 
@@ -552,7 +530,6 @@ public class Parser {
         if (!isValid) {
             fail("'turnR' is not found", scanner);
         }
-        // TODO Auto-generated method stub
         return new TurnRNode();
     }
 
@@ -561,7 +538,6 @@ public class Parser {
         if (!isValid) {
             fail("'turnL' is not found", scanner);
         }
-        // TODO Auto-generated method stub
         return new TurnLNode();
     }
 
