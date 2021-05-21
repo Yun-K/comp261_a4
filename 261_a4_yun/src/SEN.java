@@ -11,10 +11,30 @@
  */
 public abstract class SEN extends EXPR {
 
+    public SEN() {
+    }
+
+    /**
+     * Description: <br/>
+     * This method will return the integer val that the specificied Robot hold.
+     * <p>
+     * E.g.let's see lt(fuelLeft, 20)
+     * <p>
+     * SEN::fuelLeft::getValue(Robot) will return the fuel left that robot hold
+     * <p>
+     * And Num::getValue(Robot) will return 20 in this case.
+     * 
+     * @author Yun Zhou
+     * @param robot
+     * @return
+     */
+    public abstract int evaluate(Robot robot);
+
+    public abstract String toString();
+
 }
 
 class FuelLeftNode extends SEN {
-    private Robot robot;
 
     public FuelLeftNode() {
 
@@ -68,14 +88,12 @@ class OppFB extends SEN {
 
     @Override
     public int evaluate(Robot robot) {
-        // TODO Auto-generated method stub
-        return 0;
+        return robot.getOpponentFB();
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return "oppFB";
     }
 }
 
@@ -83,14 +101,12 @@ class NumBarrels extends SEN {
 
     @Override
     public int evaluate(Robot robot) {
-        // TODO Auto-generated method stub
-        return 0;
+        return robot.numBarrels();
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return "numBarrels";
     }
 }
 
@@ -98,14 +114,12 @@ class BarrelLR extends SEN {
 
     @Override
     public int evaluate(Robot robot) {
-        // TODO Auto-generated method stub
-        return 0;
+        return robot.getClosestBarrelLR();
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return "barrelLR";
     }
 }
 
@@ -113,15 +127,12 @@ class BarrelFB extends SEN {
 
     @Override
     public int evaluate(Robot robot) {
-        // TODO Auto-generated method stub
-        // return robot.getBarrelFB(n);
-        return 0;
+        return robot.getClosestBarrelFB();
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+        return "barrelFB";
     }
 }
 
@@ -134,6 +145,6 @@ class WallDist extends SEN {
 
     @Override
     public String toString() {
-        return "wallDist:";
+        return "wallDist";
     }
 }

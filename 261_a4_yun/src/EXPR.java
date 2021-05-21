@@ -6,7 +6,7 @@
  * @version
  */
 public abstract class EXPR {
-    protected Robot robot;
+    // protected Robot robot;
 
     /**
      * Description: <br/>

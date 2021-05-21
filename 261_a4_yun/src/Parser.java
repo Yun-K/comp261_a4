@@ -89,8 +89,8 @@ public class Parser {
 
     /** my pattern: */
     // static Pattern STMT_PATTERN=Pattern.compile("")
-    final static Pattern ACT_PATTERN = Pattern.compile(
-            "move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
+    final static Pattern ACT_PATTERN = Pattern
+            .compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
@@ -144,9 +144,8 @@ public class Parser {
 
         // expected token is missing! execute code below
         else {
-            fail("Next token can't start since it is invalid for STMT!"
-                 + "\nNext token is :" + (scanner.hasNext() ? scanner.next() : null),
-                    scanner);
+            fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
+                 + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
         }
     }
@@ -320,13 +319,14 @@ public class Parser {
         /*
          * Parser RELOP first
          */
+        RELOP relop = null;
         // like parseACT to check RELOP one by one
         if (scanner.hasNext("lt")) {
-            return parseLT(scanner);
+            relop = parseLT(scanner);
         } else if (scanner.hasNext("gt")) {
-            return parseGT(scanner);
+            relop = parseGT(scanner);
         } else if (scanner.hasNext("eq")) {
-            return parseEQ(scanner);
+            relop = parseEQ(scanner);
         }
         // /*
         // * check if it has the bracket
@@ -335,24 +335,82 @@ public class Parser {
 
         // below are stage 2
         // else if() {}
-        // invalid
-        else {
+
+        /*
+         * return statement
+         */
+        if (relop != null) {
+            return relop;
+        } else {
+            // invalid
             fail("Didn't find the valid cond that can be parsed", scanner);
             return null;
         }
     }
 
-    private static COND parseEQ(Scanner scanner) {
-        // TODO Auto-generated method stub
-        return null;
+    private static RELOP parseEQ(Scanner scanner) {
+        // scan if it match and go to scan next
+        if (!checkFor("eq", scanner)) {
+            fail("'eq' is missing", scanner);
+        }
+
+        /* then check the '(',sen,num,')' one by one */
+        // check if it has the '('
+        if (!checkFor(OPENPAREN, scanner)) {
+            fail("'(' is missing", scanner);
+        }
+
+        /*
+         * parse
+         */
+        EXPR SEN = parseExp(scanner);
+        if (!checkFor(",", scanner)) {
+            fail("',' is missing ", scanner);
+        }
+
+        EXPR NUM = parseExp(scanner);
+
+        // check if it has the ')'
+        if (!checkFor(CLOSEPAREN, scanner)) {
+            fail("')' is missing", scanner);
+        }
+        return new Eq(SEN, NUM);
     }
 
-    private static COND parseGT(Scanner scanner) {
-        // TODO Auto-generated method stub
-        return null;
+    private static RELOP parseGT(Scanner scanner) {
+        // scan if it match and go to scan next
+        if (!checkFor("gt", scanner)) {
+            fail("'gt' is missing", scanner);
+        }
+
+        /* then check the '(',sen,num,')' one by one */
+        // check if it has the '('
+        if (!checkFor(OPENPAREN, scanner)) {
+            fail("'(' is missing", scanner);
+        }
+
+        /*
+         * parse
+         */
+        EXPR SEN = parseExp(scanner);
+        if (!checkFor(",", scanner)) {
+            fail("',' is missing ", scanner);
+        }
+
+        EXPR num = parseExp(scanner);
+        if (num instanceof NUM) {
+            
+        }
+
+        // check if it has the ')'
+        if (!checkFor(CLOSEPAREN, scanner)) {
+            fail("')' is missing", scanner);
+        }
+        return new Gt(SEN, num);
+
     }
 
-    private static COND parseLT(Scanner scanner) {
+    private static RELOP parseLT(Scanner scanner) {
         // scan if it match and go to scan next
         if (!checkFor("lt", scanner)) {
             fail("'lt' is missing", scanner);
@@ -367,22 +425,62 @@ public class Parser {
         /*
          * parse
          */
-        EXPR SEN = parseExpr(scanner);
+        EXPR SEN = parseExp(scanner);
         if (!checkFor(",", scanner)) {
             fail("',' is missing ", scanner);
         }
 
-        EXPR NUM = parseExpr(scanner);
+        EXPR NUM = parseExp(scanner);
 
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
             fail("')' is missing", scanner);
         }
-        return null;
+        return new lt(SEN, NUM);
     }
 
-    private static EXPR parseExpr(Scanner scanner) {
-        // TODO Auto-generated method stub
+    private static EXPR parseExp(Scanner scanner) {
+
+        // stage 1
+        if (scanner.hasNext(Parser.SEN_PATTERN)) {
+            SEN sen = null;
+            String nextToken = scanner.next();
+            switch (nextToken) {
+            case "fuelLeft":
+                sen = new FuelLeftNode();
+                break;
+            case "oppLR":
+                sen = new OppLR();
+                break;
+            case "oppFB":
+                sen = new OppFB();
+                break;
+            case "numBarrels":
+                sen = new NumBarrels();
+                break;
+            case "barrelLR":
+                sen = new BarrelLR();
+                break;
+            case "barrelFB":
+                sen = new BarrelFB();
+                break;
+
+            case "wallDist":
+                sen= new WallDist();
+                break;
+            default:// no default , should throw the fail message
+                fail("not a valid SEN!", scanner);
+                break;
+            }
+
+            return sen;
+        } else if (scanner.hasNext(NUMPAT)) {
+            NUM num = new NUM(Integer.valueOf(scanner.next()));
+            return num;
+        }
+        // stage 2
+
+        fail("the EXPR is invalid", scanner);
         return null;
     }
 
@@ -513,4 +611,5 @@ public class Parser {
 
 }
 
-// You could add the node classes here, as long as they are not declared public (or private)
+// You could add the node classes here, as long as they are not declared public
+// (or private)
