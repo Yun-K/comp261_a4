@@ -317,6 +317,9 @@ public class Parser {
             fail("The cond is invalid", scanner);
         }
 
+        /*
+         * Parser RELOP first
+         */
         // like parseACT to check RELOP one by one
         if (scanner.hasNext("lt")) {
             return parseLT(scanner);
@@ -325,6 +328,11 @@ public class Parser {
         } else if (scanner.hasNext("eq")) {
             return parseEQ(scanner);
         }
+        // /*
+        // * check if it has the bracket
+        // */
+        // scanner.hasNext(OPENPAREN)
+
         // below are stage 2
         // else if() {}
         // invalid
@@ -356,10 +364,25 @@ public class Parser {
             fail("'(' is missing", scanner);
         }
 
+        /*
+         * parse
+         */
+        EXPR SEN = parseExpr(scanner);
+        if (!checkFor(",", scanner)) {
+            fail("',' is missing ", scanner);
+        }
+
+        EXPR NUM = parseExpr(scanner);
+
         // check if it has the ')'
         if (!checkFor(CLOSEPAREN, scanner)) {
             fail("')' is missing", scanner);
         }
+        return null;
+    }
+
+    private static EXPR parseExpr(Scanner scanner) {
+        // TODO Auto-generated method stub
         return null;
     }
 
