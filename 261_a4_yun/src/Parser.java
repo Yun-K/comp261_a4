@@ -206,7 +206,7 @@ public class Parser {
 
         // do the check and return node
         if (!checkFor(";", scanner)) {
-            fail("';' is missing this ACT", scanner);
+            fail("';' is missing after this ACT", scanner);
         }
         return node;
 
@@ -314,7 +314,7 @@ public class Parser {
 
     static BLOCK parseBLOCK(Scanner scanner) {// DONE
         if (!checkFor(OPENBRACE, scanner)) {
-            fail("'{' is missing, so invalid Block", scanner);
+            fail("'{' is missing, so it is the invalid Block", scanner);
         }
 
         // add all remaining stmt into the list until find '}'
@@ -412,8 +412,8 @@ public class Parser {
             }
             return logic;
         }
+        fail("It is invalid COND", scanner);
         // dead code, should not execute below
-        assert false;
         return null;
     }
     // ----------------------------------------------------------------
@@ -637,10 +637,10 @@ public class Parser {
             scanner.next();
             EXPR expr = parseExp(scanner);
             // check whether it has ')'
-            if (checkFor(CLOSEPAREN, scanner)) {
-                return new WaitNode(expr);
+            if (!checkFor(CLOSEPAREN, scanner)) {
+                fail("')' is missing for wait(", scanner);
             }
-            fail("')' is missing for wait(", scanner);
+            return new WaitNode(expr);
         }
         // no arg, just return wait
         return new WaitNode();

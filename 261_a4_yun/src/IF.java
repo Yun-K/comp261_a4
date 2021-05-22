@@ -62,7 +62,7 @@ public class IF extends STMT {
                 if (this.blockList.size() > 1) {
                     if (this.gotElse && this.blockList.size() == 2) {
                         // execute else block
-                        this.blockList.get(0).execute(robot);
+                        this.blockList.get(blockList.size() - 1).execute(robot);
                     }
                 }
             }
@@ -83,11 +83,13 @@ public class IF extends STMT {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("if(").append(this.conditionList.get(0).toString())
+        StringBuffer sb = new StringBuffer("if(")
+                .append(this.conditionList.get(0).toString())
                 .append("){\n")
                 .append(blockList.get(0).toString()).append("\n}");
         if (gotElse) {
-            sb.append("else{").append(blockList.get(blockList.size() - 1).toString()).append("}");
+            sb.append("\nelse{")
+                    .append(blockList.get(blockList.size() - 1).toString()).append("\n}");
         }
 
         return sb.toString();
