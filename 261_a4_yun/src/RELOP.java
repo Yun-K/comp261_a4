@@ -72,7 +72,7 @@ class Gt extends RELOP {
                 .append(childNode1.toString())
                 .append(",")
                 .append(childNode2.toString())
-                .append(")");
+                .append(");");
         return sb.toString();
 
     }
