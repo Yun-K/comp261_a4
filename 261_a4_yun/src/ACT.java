@@ -30,9 +30,23 @@ class MoveNode extends ACT {
         super(actNode);
     }
 
+    private EXPR expr = null;
+
+    public MoveNode(EXPR expr) {
+        this.expr = expr;
+    }
+
     @Override
     public void execute(Robot robot) {
-        robot.move();// move the robot
+        if (expr != null) {
+            // move the number of the expr.evaluate()
+            for (int i = 0; i < expr.evaluate(robot); i++) {
+                robot.move();
+            }
+        }
+
+        // no expr, move robot once
+        robot.move();
     }
 
     @Override
