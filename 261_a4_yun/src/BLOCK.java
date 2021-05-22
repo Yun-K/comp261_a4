@@ -35,7 +35,7 @@ public class BLOCK implements RobotProgramNode {
             sb.append("\n");
 
         }
-        sb.append("\n}");
+        sb.append("\n\t}");
         return sb.toString();
         // return super.toString();
 
