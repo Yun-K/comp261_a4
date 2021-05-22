@@ -6,9 +6,9 @@ import java.util.regex.*;
 import javax.swing.JFileChooser;
 
 /**
- * The parser and interpreter. The top level parse function, a main method for testing, and
- * several utility methods are provided. You need to implement parseProgram and all the rest of
- * the parser.
+ * The parser and interpreter. The top level parse function, a main method for
+ * testing, and several utility methods are provided. You need to implement
+ * parseProgram and all the rest of the parser.
  */
 public class Parser {
 
@@ -87,21 +87,21 @@ public class Parser {
 
     static Pattern CLOSEBRACE = Pattern.compile("\\}");
 
-    /** my pattern: */
+    /** my pattern: TODO */
     // static Pattern STMT_PATTERN=Pattern.compile("")
-    final static Pattern ACT_PATTERN = Pattern
-            .compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
+    final static Pattern ACT_PATTERN = Pattern.compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
     final static Pattern RELOP_PATTERN = Pattern.compile("lt|gt|eq");
 
-    final static Pattern SEN_PATTERN = Pattern
-            .compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
+    final static Pattern SEN_PATTERN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
 
     final static Pattern NUM_PATTERN = Pattern.compile("-?[1-9][0-9]*|0");// -?[0-9]+");
 
     final static Pattern OP_PATTERN = Pattern.compile("add|sub|mul|div");
+
+    final static Pattern CONDPattern_logic = Pattern.compile("and|or|not");
 
     /**
      * See assignment handout for the grammar.
@@ -147,7 +147,7 @@ public class Parser {
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
-                 + (scanner.hasNext() ? scanner.next() : null), scanner);
+                    + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
         }
     }
@@ -336,176 +336,225 @@ public class Parser {
     }
 
     private static COND parseCOND(Scanner scanner) {// TODO
-        if (!scanner.hasNext(RELOP_PATTERN)) {
-            fail("The cond is invalid", scanner);
-        }
+        // if (!scanner.hasNext(RELOP_PATTERN)) {
+        // fail("The cond is invalid", scanner);
+        // }
 
-        /*
-         * Parser RELOP first
-         */
-        RELOP relop = null;
-        // like parseACT to check RELOP one by one
-        if (scanner.hasNext("lt")) {
-            relop = parseLT(scanner);
-        } else if (scanner.hasNext("gt")) {
-            relop = parseGT(scanner);
-        } else if (scanner.hasNext("eq")) {
-            relop = parseEQ(scanner);
-        }
-        // /*
-        // * check if it has the bracket
-        // */
-        // scanner.hasNext(OPENPAREN)
-
-        // below are stage 2
-        // else if() {}
-
-        /*
-         * return statement
-         */
-        if (relop != null) {
+        if (scanner.hasNext(RELOP_PATTERN)) {
+            String nextToken = scanner.next();// either lt, gt or eq
+            if (!checkFor(OPENPAREN, scanner)) {
+                fail("'(' is missing after " + nextToken, scanner);
+            }
+            EXPR child1 = parseExp(scanner);
+            if (!checkFor(",", scanner)) {
+                fail("',' is missing after " + nextToken, scanner);
+            }
+            EXPR child2 = parseExp(scanner);
+            if (!checkFor(CLOSEPAREN, scanner)) {
+                fail("')' is missing after " + nextToken, scanner);
+            }
+            /*
+             * Parser RELOP
+             */
+            RELOP relop = null;
+            switch (nextToken) {
+                case "lt":
+                    relop = new lt(child1, child2);
+                    break;
+                case "gt":
+                    relop = new Gt(child1, child2);
+                    break;
+                case "eq":
+                    relop = new Eq(child1, child2);
+                    break;
+                default:// no default , should throw the fail message
+                    fail("Didn't find the valid RELOP that can be parsed", scanner);
+                    break;
+            }
             return relop;
-        } else {
-            // invalid
-            fail("Didn't find the valid cond that can be parsed", scanner);
-            return null;
+        } else if (scanner.hasNext(CONDPattern_logic)) {
+            String nextToken = scanner.next();// either and, or , not
+            if (!checkFor(OPENPAREN, scanner)) {
+                fail("'(' is missing after " + nextToken, scanner);
+            }
+            COND child1 = parseCOND(scanner);
+            // check if it is NOT
+            if (nextToken.equals("not")) {
+                if (!checkFor(CLOSEPAREN, scanner)) {
+                    fail("')' is missing after " + nextToken, scanner);
+                }
+                return new Not(child1);
+            }
+            /*
+             * check AND , OR
+             */
+            if (!checkFor(",", scanner)) {
+                fail("',' is missing after " + nextToken, scanner);
+            }
+            COND child2 = parseCOND(scanner);
+            if (!checkFor(CLOSEPAREN, scanner)) {
+                fail("')' is missing after " + nextToken, scanner);
+            }
+            /*
+             * Parser Logic
+             */
+            Logic logic = null;
+            switch (nextToken) {
+                case "and":
+                    logic = new And(child1, child2);
+                    break;
+                case "or":
+                    logic = new Or(child1, child2);
+                    break;
+                default:// no default , should throw the fail message
+                    fail("Didn't find the valid Logic(And,Or,Not) that can be parsed", scanner);
+                    break;
+            }
+            return logic;
         }
+        // dead code, should not execute below
+        assert false;
+        return null;
     }
+    // ----------------------------------------------------------------
+    /*
+     * below are for RELOP from stage1 Since i rewrite them for stage 2, so comment
+     * them out
+     */
+    // private static RELOP parseEQ(Scanner scanner) {
+    // // scan if it match and go to scan next
+    // if (!checkFor("eq", scanner)) {
+    // fail("'eq' is missing", scanner);
+    // }
 
-    private static RELOP parseEQ(Scanner scanner) {
-        // scan if it match and go to scan next
-        if (!checkFor("eq", scanner)) {
-            fail("'eq' is missing", scanner);
-        }
+    // /* then check the '(',sen,num,')' one by one */
+    // // check if it has the '('
+    // if (!checkFor(OPENPAREN, scanner)) {
+    // fail("'(' is missing", scanner);
+    // }
 
-        /* then check the '(',sen,num,')' one by one */
-        // check if it has the '('
-        if (!checkFor(OPENPAREN, scanner)) {
-            fail("'(' is missing", scanner);
-        }
+    // /*
+    // * parse
+    // */
+    // EXPR SEN = parseExp(scanner);
+    // if (!checkFor(",", scanner)) {
+    // fail("',' is missing ", scanner);
+    // }
 
-        /*
-         * parse
-         */
-        EXPR SEN = parseExp(scanner);
-        if (!checkFor(",", scanner)) {
-            fail("',' is missing ", scanner);
-        }
+    // EXPR num = parseExp(scanner);
+    // if (!(SEN instanceof SEN)) {
+    // fail("The first argument should be the Sen instance", scanner);
+    // }
 
-        EXPR num = parseExp(scanner);
-        if (!(SEN instanceof SEN)) {
-            fail("The first argument should be the Sen instance", scanner);
-        }
+    // if (!(num instanceof NUM)) {
+    // fail("The second argument should be the instance of NUM", scanner);
+    // }
 
-        if (!(num instanceof NUM)) {
-            fail("The second argument should be the instance of NUM", scanner);
-        }
+    // // check if it has the ')'
+    // if (!checkFor(CLOSEPAREN, scanner)) {
+    // fail("')' is missing", scanner);
+    // }
+    // return new Eq(SEN, num);
+    // }
 
-        // check if it has the ')'
-        if (!checkFor(CLOSEPAREN, scanner)) {
-            fail("')' is missing", scanner);
-        }
-        return new Eq(SEN, num);
-    }
+    // private static RELOP parseGT(Scanner scanner) {
+    // // scan if it match and go to scan next
+    // if (!checkFor("gt", scanner)) {
+    // fail("'gt' is missing", scanner);
+    // }
 
-    private static RELOP parseGT(Scanner scanner) {
-        // scan if it match and go to scan next
-        if (!checkFor("gt", scanner)) {
-            fail("'gt' is missing", scanner);
-        }
+    // /* then check the '(',sen,num,')' one by one */
+    // // check if it has the '('
+    // if (!checkFor(OPENPAREN, scanner)) {
+    // fail("'(' is missing", scanner);
+    // }
 
-        /* then check the '(',sen,num,')' one by one */
-        // check if it has the '('
-        if (!checkFor(OPENPAREN, scanner)) {
-            fail("'(' is missing", scanner);
-        }
+    // /*
+    // * parse
+    // */
+    // EXPR SEN = parseExp(scanner);
+    // if (!checkFor(",", scanner)) {
+    // fail("',' is missing ", scanner);
+    // }
 
-        /*
-         * parse
-         */
-        EXPR SEN = parseExp(scanner);
-        if (!checkFor(",", scanner)) {
-            fail("',' is missing ", scanner);
-        }
+    // EXPR num = parseExp(scanner);
+    // if (!(num instanceof NUM)) {
+    // fail("The second argument should be the instance of NUM", scanner);
+    // }
 
-        EXPR num = parseExp(scanner);
-        if (!(num instanceof NUM)) {
-            fail("The second argument should be the instance of NUM", scanner);
-        }
+    // // check if it has the ')'
+    // if (!checkFor(CLOSEPAREN, scanner)) {
+    // fail("')' is missing", scanner);
+    // }
+    // return new Gt(SEN, num);
 
-        // check if it has the ')'
-        if (!checkFor(CLOSEPAREN, scanner)) {
-            fail("')' is missing", scanner);
-        }
-        return new Gt(SEN, num);
+    // }
 
-    }
+    // private static RELOP parseLT(Scanner scanner) {
+    // // scan if it match and go to scan next
+    // if (!checkFor("lt", scanner)) {
+    // fail("'lt' is missing", scanner);
+    // }
 
-    private static RELOP parseLT(Scanner scanner) {
-        // scan if it match and go to scan next
-        if (!checkFor("lt", scanner)) {
-            fail("'lt' is missing", scanner);
-        }
+    // /* then check the '(',sen,num,')' one by one */
+    // // check if it has the '('
+    // if (!checkFor(OPENPAREN, scanner)) {
+    // fail("'(' is missing", scanner);
+    // }
 
-        /* then check the '(',sen,num,')' one by one */
-        // check if it has the '('
-        if (!checkFor(OPENPAREN, scanner)) {
-            fail("'(' is missing", scanner);
-        }
+    // /*
+    // * parse
+    // */
+    // EXPR SEN = parseExp(scanner);
+    // if (!checkFor(",", scanner)) {
+    // fail("',' is missing ", scanner);
+    // }
 
-        /*
-         * parse
-         */
-        EXPR SEN = parseExp(scanner);
-        if (!checkFor(",", scanner)) {
-            fail("',' is missing ", scanner);
-        }
+    // EXPR num = parseExp(scanner);
 
-        EXPR num = parseExp(scanner);
+    // // if (!(num instanceof NUM)) {
+    // // fail("The second argument should be the instance of NUM", scanner);
+    // // }
 
-        if (!(num instanceof NUM)) {
-            fail("The second argument should be the instance of NUM", scanner);
-        }
-
-        // check if it has the ')'
-        if (!checkFor(CLOSEPAREN, scanner)) {
-            fail("')' is missing", scanner);
-        }
-        return new lt(SEN, num);
-    }
-
+    // // check if it has the ')'
+    // if (!checkFor(CLOSEPAREN, scanner)) {
+    // fail("')' is missing", scanner);
+    // }
+    // return new lt(SEN, num);
+    // }
+    // ----------------------------------------------------------------
     private static EXPR parseExp(Scanner scanner) {
 
         // stage 1
         if (scanner.hasNext(Parser.SEN_PATTERN)) {
             SEN sen = null;
-            String nextToken = scanner.next();
+            String nextToken = scanner.next();// either fuelLeft, oppLR, opFB,numBarrels ....
             switch (nextToken) {
-            case "fuelLeft":
-                sen = new FuelLeftNode();
-                break;
-            case "oppLR":
-                sen = new OppLR();
-                break;
-            case "oppFB":
-                sen = new OppFB();
-                break;
-            case "numBarrels":
-                sen = new NumBarrels();
-                break;
-            case "barrelLR":
-                sen = new BarrelLR();
-                break;
-            case "barrelFB":
-                sen = new BarrelFB();
-                break;
+                case "fuelLeft":
+                    sen = new FuelLeftNode();
+                    break;
+                case "oppLR":
+                    sen = new OppLR();
+                    break;
+                case "oppFB":
+                    sen = new OppFB();
+                    break;
+                case "numBarrels":
+                    sen = new NumBarrels();
+                    break;
+                case "barrelLR":
+                    sen = new BarrelLR();
+                    break;
+                case "barrelFB":
+                    sen = new BarrelFB();
+                    break;
 
-            case "wallDist":
-                sen = new WallDist();
-                break;
-            default:// no default , should throw the fail message
-                fail("not a valid SEN!", scanner);
-                break;
+                case "wallDist":
+                    sen = new WallDist();
+                    break;
+                default:// no default , should throw the fail message
+                    fail("not a valid SEN!", scanner);
+                    break;
             }
 
             return sen;
@@ -515,7 +564,7 @@ public class Parser {
         }
         // stage 2
         else if (scanner.hasNext(OP_PATTERN)) {
-            String nextToken = scanner.next();
+            String nextToken = scanner.next();// the op can either be add, sub,mul or div
             if (!checkFor(OPENPAREN, scanner)) {
                 fail("'(' is missing after " + nextToken, scanner);
             }
@@ -530,23 +579,23 @@ public class Parser {
 
             OP op = null;
             switch (nextToken) {
-            case "add":
-                op = new Add(child1, child2);
+                case "add":
+                    op = new Add(child1, child2);
 
-                break;
-            case "sub":
-                op = new Sub(child1, child2);
-                break;
-            case "mul":
-                op = new Mul(child1, child2);
-                break;
-            case "div":
-                op = new Div(child1, child2);
-                break;
+                    break;
+                case "sub":
+                    op = new Sub(child1, child2);
+                    break;
+                case "mul":
+                    op = new Mul(child1, child2);
+                    break;
+                case "div":
+                    op = new Div(child1, child2);
+                    break;
 
-            default:// no default , should throw the fail message
-                fail("not a valid OPerator!", scanner);
-                break;
+                default:// no default , should throw the fail message
+                    fail("not a valid OPerator!", scanner);
+                    break;
             }
             return op;
 
@@ -574,6 +623,7 @@ public class Parser {
             fail("')' is missing for move(", scanner);
 
         }
+        // no arg, just return it
         return new MoveNode();
     }
 
@@ -634,8 +684,8 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern if it matches, it consumes and returns
-     * the token, if not, it throws an exception with an error message
+     * Requires that the next token matches a pattern if it matches, it consumes and
+     * returns the token, if not, it throws an exception with an error message
      */
     static String require(String p, String message, Scanner s) {
         if (s.hasNext(p)) {
@@ -654,9 +704,9 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern (which should only match a number) if it
-     * matches, it consumes and returns the token as an integer if not, it throws an exception
-     * with an error message
+     * Requires that the next token matches a pattern (which should only match a
+     * number) if it matches, it consumes and returns the token as an integer if
+     * not, it throws an exception with an error message
      */
     static int requireInt(String p, String message, Scanner s) {
         if (s.hasNext(p) && s.hasNextInt()) {
@@ -675,8 +725,9 @@ public class Parser {
     }
 
     /**
-     * Checks whether the next token in the scanner matches the specified pattern, if so,
-     * consumes the token and return true. Otherwise returns false without consuming anything.
+     * Checks whether the next token in the scanner matches the specified pattern,
+     * if so, consumes the token and return true. Otherwise returns false without
+     * consuming anything.
      */
     static boolean checkFor(String p, Scanner s) {
         if (s.hasNext(p)) {
