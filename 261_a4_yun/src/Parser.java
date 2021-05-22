@@ -6,9 +6,9 @@ import java.util.regex.*;
 import javax.swing.JFileChooser;
 
 /**
- * The parser and interpreter. The top level parse function, a main method for
- * testing, and several utility methods are provided. You need to implement
- * parseProgram and all the rest of the parser.
+ * The parser and interpreter. The top level parse function, a main method for testing, and
+ * several utility methods are provided. You need to implement parseProgram and all the rest of
+ * the parser.
  */
 public class Parser {
 
@@ -89,13 +89,15 @@ public class Parser {
 
     /** my pattern: TODO */
     // static Pattern STMT_PATTERN=Pattern.compile("")
-    final static Pattern ACT_PATTERN = Pattern.compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
+    final static Pattern ACT_PATTERN = Pattern
+            .compile("move|turnL|turnR|takeFuel|wait|turnAround|shieldOn|shieldOff");
 
     final static Pattern LOOP_PATTERN = Pattern.compile("loop");
 
     final static Pattern RELOP_PATTERN = Pattern.compile("lt|gt|eq");
 
-    final static Pattern SEN_PATTERN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
+    final static Pattern SEN_PATTERN = Pattern
+            .compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
 
     final static Pattern NUM_PATTERN = Pattern.compile("-?[1-9][0-9]*|0");// -?[0-9]+");
 
@@ -128,7 +130,7 @@ public class Parser {
         return new PROG(allProgramNodes);
     }
 
-    static RobotProgramNode parseSTMT(Scanner scanner) {
+    static STMT parseSTMT(Scanner scanner) {
         // use hasNext("") to peek nextToken
         if (scanner.hasNext(LOOP_PATTERN)) {
             return parseLOOP(scanner);// DONE
@@ -147,12 +149,12 @@ public class Parser {
         // expected token is missing! execute code below
         else {
             fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
-                    + (scanner.hasNext() ? scanner.next() : null), scanner);
+                 + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
         }
     }
 
-    public static RobotProgramNode parseLOOP(Scanner scanner) {// DONE
+    public static STMT parseLOOP(Scanner scanner) {// DONE
         boolean isMatch = checkFor(LOOP_PATTERN, scanner);
         if (!isMatch) {
             fail("The 'loop' is missing", scanner);
@@ -212,7 +214,7 @@ public class Parser {
 
     }
 
-    private static WHILE parseWHILE(Scanner scanner) {
+    private static STMT parseWHILE(Scanner scanner) {
         boolean isMatch = checkFor("while", scanner);
         if (!isMatch) {
             fail("'while' is missing", scanner);
@@ -318,7 +320,7 @@ public class Parser {
         }
 
         // add all remaining stmt into the list until find '}'
-        List<RobotProgramNode> stmtNodes = new ArrayList<>();
+        List<STMT> stmtNodes = new ArrayList<>();
         while (!scanner.hasNext(CLOSEBRACE)) {
             stmtNodes.add(parseSTMT(scanner));
         }
@@ -358,18 +360,18 @@ public class Parser {
              */
             RELOP relop = null;
             switch (nextToken) {
-                case "lt":
-                    relop = new lt(child1, child2);
-                    break;
-                case "gt":
-                    relop = new Gt(child1, child2);
-                    break;
-                case "eq":
-                    relop = new Eq(child1, child2);
-                    break;
-                default:// no default , should throw the fail message
-                    fail("Didn't find the valid RELOP that can be parsed", scanner);
-                    break;
+            case "lt":
+                relop = new lt(child1, child2);
+                break;
+            case "gt":
+                relop = new Gt(child1, child2);
+                break;
+            case "eq":
+                relop = new Eq(child1, child2);
+                break;
+            default:// no default , should throw the fail message
+                fail("Didn't find the valid RELOP that can be parsed", scanner);
+                break;
             }
             return relop;
         } else if (scanner.hasNext(CONDPattern_logic)) {
@@ -400,15 +402,15 @@ public class Parser {
              */
             Logic logic = null;
             switch (nextToken) {
-                case "and":
-                    logic = new And(child1, child2);
-                    break;
-                case "or":
-                    logic = new Or(child1, child2);
-                    break;
-                default:// no default , should throw the fail message
-                    fail("Didn't find the valid Logic(And,Or,Not) that can be parsed", scanner);
-                    break;
+            case "and":
+                logic = new And(child1, child2);
+                break;
+            case "or":
+                logic = new Or(child1, child2);
+                break;
+            default:// no default , should throw the fail message
+                fail("Didn't find the valid Logic(And,Or,Not) that can be parsed", scanner);
+                break;
             }
             return logic;
         }
@@ -418,8 +420,7 @@ public class Parser {
     }
     // ----------------------------------------------------------------
     /*
-     * below are for RELOP from stage1 Since i rewrite them for stage 2, so comment
-     * them out
+     * below are for RELOP from stage1 Since i rewrite them for stage 2, so comment them out
      */
     // private static RELOP parseEQ(Scanner scanner) {
     // // scan if it match and go to scan next
@@ -530,31 +531,31 @@ public class Parser {
             SEN sen = null;
             String nextToken = scanner.next();// either fuelLeft, oppLR, opFB,numBarrels ....
             switch (nextToken) {
-                case "fuelLeft":
-                    sen = new FuelLeftNode();
-                    break;
-                case "oppLR":
-                    sen = new OppLR();
-                    break;
-                case "oppFB":
-                    sen = new OppFB();
-                    break;
-                case "numBarrels":
-                    sen = new NumBarrels();
-                    break;
-                case "barrelLR":
-                    sen = new BarrelLR();
-                    break;
-                case "barrelFB":
-                    sen = new BarrelFB();
-                    break;
+            case "fuelLeft":
+                sen = new FuelLeftNode();
+                break;
+            case "oppLR":
+                sen = new OppLR();
+                break;
+            case "oppFB":
+                sen = new OppFB();
+                break;
+            case "numBarrels":
+                sen = new NumBarrels();
+                break;
+            case "barrelLR":
+                sen = new BarrelLR();
+                break;
+            case "barrelFB":
+                sen = new BarrelFB();
+                break;
 
-                case "wallDist":
-                    sen = new WallDist();
-                    break;
-                default:// no default , should throw the fail message
-                    fail("not a valid SEN!", scanner);
-                    break;
+            case "wallDist":
+                sen = new WallDist();
+                break;
+            default:// no default , should throw the fail message
+                fail("not a valid SEN!", scanner);
+                break;
             }
 
             return sen;
@@ -579,23 +580,23 @@ public class Parser {
 
             OP op = null;
             switch (nextToken) {
-                case "add":
-                    op = new Add(child1, child2);
+            case "add":
+                op = new Add(child1, child2);
 
-                    break;
-                case "sub":
-                    op = new Sub(child1, child2);
-                    break;
-                case "mul":
-                    op = new Mul(child1, child2);
-                    break;
-                case "div":
-                    op = new Div(child1, child2);
-                    break;
+                break;
+            case "sub":
+                op = new Sub(child1, child2);
+                break;
+            case "mul":
+                op = new Mul(child1, child2);
+                break;
+            case "div":
+                op = new Div(child1, child2);
+                break;
 
-                default:// no default , should throw the fail message
-                    fail("not a valid OPerator!", scanner);
-                    break;
+            default:// no default , should throw the fail message
+                fail("not a valid OPerator!", scanner);
+                break;
             }
             return op;
 
@@ -684,8 +685,8 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern if it matches, it consumes and
-     * returns the token, if not, it throws an exception with an error message
+     * Requires that the next token matches a pattern if it matches, it consumes and returns
+     * the token, if not, it throws an exception with an error message
      */
     static String require(String p, String message, Scanner s) {
         if (s.hasNext(p)) {
@@ -704,9 +705,9 @@ public class Parser {
     }
 
     /**
-     * Requires that the next token matches a pattern (which should only match a
-     * number) if it matches, it consumes and returns the token as an integer if
-     * not, it throws an exception with an error message
+     * Requires that the next token matches a pattern (which should only match a number) if it
+     * matches, it consumes and returns the token as an integer if not, it throws an exception
+     * with an error message
      */
     static int requireInt(String p, String message, Scanner s) {
         if (s.hasNext(p) && s.hasNextInt()) {
@@ -725,9 +726,8 @@ public class Parser {
     }
 
     /**
-     * Checks whether the next token in the scanner matches the specified pattern,
-     * if so, consumes the token and return true. Otherwise returns false without
-     * consuming anything.
+     * Checks whether the next token in the scanner matches the specified pattern, if so,
+     * consumes the token and return true. Otherwise returns false without consuming anything.
      */
     static boolean checkFor(String p, Scanner s) {
         if (s.hasNext(p)) {
