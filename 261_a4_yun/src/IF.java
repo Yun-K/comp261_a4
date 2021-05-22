@@ -50,12 +50,15 @@ public class IF extends STMT {
     public void execute(Robot robot) {
         // in the case of the there is only one COND,
         // which means we only got :
-        // if OR if else
+        // if with else OR if without else
         if (this.conditionList.size() == 1) {
             // check if the condition is met
             if (this.conditionList.get(0).evaluate(robot)) {
                 this.blockList.get(0).execute(robot);
-            } else {
+            }
+            // the condition is not met for the if(COND),
+            // so execute else block if gotElse
+            else {
                 if (this.blockList.size() > 1) {
                     if (this.gotElse && this.blockList.size() == 2) {
                         // execute else block
@@ -80,7 +83,8 @@ public class IF extends STMT {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("if(").append(this.conditionList.get(0).toString()).append("){\n")
+        StringBuffer sb = new StringBuffer("if(").append(this.conditionList.get(0).toString())
+                .append("){\n")
                 .append(blockList.get(0).toString()).append("\n}");
         if (gotElse) {
             sb.append("else{").append(blockList.get(blockList.size() - 1).toString()).append("}");
