@@ -97,7 +97,7 @@ public class Parser {
 
     final static Pattern SEN_PATTERN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
 
-    final static Pattern NUM_PATTERN = Pattern.compile("-?[0-9]+");
+    final static Pattern NUM_PATTERN = Pattern.compile("-?[1-9][0-9]*|0");// -?[0-9]+");
 
     /**
      * See assignment handout for the grammar.
@@ -287,23 +287,24 @@ public class Parser {
         /*
          * check whether next token is else
          */
-        if (!checkFor("else", scanner)) {
-            // is Mathched, so return it
+        boolean gotElse = checkFor("else", scanner);
+        if (!gotElse) {
+            // no else, so return it
             return new IF(condition, block);
+        } else {// } if (gotElse) {
+            /* found else, parse the else block */
+            BLOCK elseBlock = parseBLOCK(scanner);
+            return new IF(new ArrayList<COND>() {
+                {
+                    add(condition);
+                }
+            }, new ArrayList<BLOCK>() {
+                {
+                    add(block);
+                    add(elseBlock);
+                }
+            }, gotElse);
         }
-
-        /* found else, parse the else block */
-        BLOCK elseBlock = parseBLOCK(scanner);
-        return new IF(new ArrayList<COND>() {
-            {
-                add(condition);
-            }
-        }, new ArrayList<BLOCK>() {
-            {
-                add(block);
-                add(elseBlock);
-            }
-        });
 
     }
 
