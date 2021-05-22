@@ -79,7 +79,7 @@ class VAR extends STMT implements EXPR {
 
     @Override
     public String toString() {
-        return variableName + " = " + expr_value.toString();
+        return variableName + " = " + expr_value.toString() + " ;";
     }
 
 }
