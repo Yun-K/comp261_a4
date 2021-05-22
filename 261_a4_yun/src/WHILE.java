@@ -1,6 +1,4 @@
-import java.util.List;
-
-public class WHILE implements RobotProgramNode {
+public class WHILE extends STMT implements RobotProgramNode {
     private COND conditions;
 
     private BLOCK block;
@@ -20,7 +18,10 @@ public class WHILE implements RobotProgramNode {
 
     @Override
     public String toString() {
-        return "while(" + this.conditions.toString() + ")";
+        StringBuffer sb = new StringBuffer("while(" + this.conditions.toString() + ")");
+        sb.append(this.block.toString());
+
+        return sb.toString();
     }
 
 }
