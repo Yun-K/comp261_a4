@@ -16,6 +16,6 @@ public class LOOP extends STMT implements RobotProgramNode {// done
 
     public String toString() {
         // return "loop" + this.block;
-        return "loop {\n" + this.block + "\n}\n";
+        return "loop \n" + this.block + "\n";
     }
 }
