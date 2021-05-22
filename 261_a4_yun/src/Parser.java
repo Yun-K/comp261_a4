@@ -144,30 +144,9 @@ public class Parser {
         } else if (scanner.hasNext("while")) {
             return parseWHILE(scanner);
         }
-        // for stage 3 & 4
+        // for stage 3 & 4, VAR class
         else if (scanner.hasNext(VAR_PATTERN)) {
-            String variableName = scanner.next();
-            if (scanner.hasNext("=")) {
-                scanner.next();// '=' token
-                EXPR valueEXP = parseExp(scanner);
-                if (!checkFor(";", scanner)) {
-                    fail("';' is missing after " + valueEXP.toString(), scanner);
-                }
-
-                variable_expr_map.put(variableName, valueEXP);// put it into the Map, if it's already exist, it will
-                                                              // update the corresponding value
-                return new VAR(variableName, valueEXP);
-            }
-            // the case that do not have '='
-            else {
-                if (variable_expr_map.containsKey(variableName)) {
-                    return new VAR(variableName, variable_expr_map.get(variableName));
-                } else {
-                    VAR toReturn = new VAR(variableName, new NUM(0));
-                    variable_expr_map.put(variableName, new NUM(0));
-                    return toReturn;
-                }
-            }
+            return parseVAR(scanner);
 
         }
 
@@ -176,6 +155,31 @@ public class Parser {
             fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
                     + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
+        }
+    }
+
+    private static VAR parseVAR(Scanner scanner) {
+        String variableName = scanner.next();// token name
+        if (scanner.hasNext("=")) {
+            scanner.next();// '=' token
+            EXPR valueEXP = parseExp(scanner);
+            if (!checkFor(";", scanner)) {
+                fail("';' is missing after " + valueEXP.toString(), scanner);
+            }
+
+            variable_expr_map.put(variableName, valueEXP);// put it into the Map, if it's already exist, it will
+                                                          // update the corresponding value
+            return new VAR(variableName, valueEXP);
+        }
+        // the case that do not have '='
+        else {
+            if (variable_expr_map.containsKey(variableName)) {
+                return new VAR(variableName, variable_expr_map.get(variableName));
+            } else {
+                VAR toReturn = new VAR(variableName, new NUM(0));
+                variable_expr_map.put(variableName, new NUM(0));
+                return toReturn;
+            }
         }
     }
 
@@ -626,13 +630,10 @@ public class Parser {
             }
             return op;
 
-        } else if (scanner.hasNext(VAR_PATTERN)) {
-            // VAR var
-            String varToken = scanner.next();
-            if (variable_expr_map.containsKey(varToken)) {
-                return new VAR(varToken, variable_expr_map.get(varToken));
-
-            }
+        }
+        // stage 3: VAR
+        else if (scanner.hasNext(VAR_PATTERN)) {
+            return parseVAR(scanner);
         }
         fail("the EXPR is invalid", scanner);
         return null;
