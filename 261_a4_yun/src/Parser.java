@@ -299,13 +299,16 @@ public class Parser {
             fail("'(' is missing", scanner);
         }
 
+        List<COND> conditionList = new ArrayList<COND>();
+        List<BLOCK> blockList = new ArrayList<BLOCK>();
         /*
          * check the CONDITION
          */
         // add all remaining cond into the list until find '}'
         COND if_cond = parseCOND(scanner);
+        conditionList.add(if_cond);
         if (if_cond == null) {
-            fail("condition can not be NULL", scanner);
+            fail("condition can not be NULL for if", scanner);
         }
 
         // check if it has the ')'
@@ -316,32 +319,63 @@ public class Parser {
         /*
          * check the BLOCK
          */
-        BLOCK block = parseBLOCK(scanner);
+        BLOCK if_block = parseBLOCK(scanner);
+        blockList.add(if_block);
         // check if it is empty
-        if (block == null) {
+        if (if_block == null) {
             fail("no block found for IF ", scanner);
+        }
+
+        boolean gotElseIf = scanner.hasNext("elif");
+        boolean elseif_is_initialTrue = gotElseIf ? true : false;
+        while (gotElseIf) {
+            // check if it has the '('
+            if (!checkFor(OPENPAREN, scanner)) {
+                fail("'(' is missing", scanner);
+            }
+
+            /*
+             * check the CONDITION
+             */
+            // add all remaining cond into the list until find '}'
+            COND temp_elseif_cond = parseCOND(scanner);
+            conditionList.add(temp_elseif_cond);
+            if (temp_elseif_cond == null) {
+                fail("condition can not be NULL for elif", scanner);
+            }
+
+            // check if it has the ')'
+            if (!checkFor(CLOSEPAREN, scanner)) {
+                fail("')' is missing", scanner);
+            }
+            /*
+             * check the BLOCK
+             */
+            BLOCK temp_elseif_block = parseBLOCK(scanner);
+            blockList.add(temp_elseif_block);
+            // check if it is empty
+            if (temp_elseif_block == null) {
+                fail("no block found for eliF ", scanner);
+            }
+
+            // go to scan if there is next else if
+            gotElseIf = scanner.hasNext("elif");
+
         }
 
         /*
          * check whether next token is else
          */
-        boolean gotElse = checkFor("else", scanner);
+        boolean gotElse = scanner.hasNext("else");
         if (!gotElse) {
             // no else, so return it
-            return new IF(if_cond, block);
+            return new IF(conditionList, blockList, gotElse, elseif_is_initialTrue);
         } else {// } if (gotElse) {
+            scanner.next();// skip else
             /* found else, parse the else block */
             BLOCK elseBlock = parseBLOCK(scanner);
-            return new IF(new ArrayList<COND>() {
-                {
-                    add(if_cond);
-                }
-            }, new ArrayList<BLOCK>() {
-                {
-                    add(block);
-                    add(elseBlock);
-                }
-            }, gotElse);
+            blockList.add(elseBlock);
+            return new IF(conditionList, blockList, gotElse, elseif_is_initialTrue);
         }
 
     }
@@ -662,7 +696,7 @@ public class Parser {
     /*
      * ACT:
      */
-    private static MoveNode parseMove(Scanner scanner) {// TODO
+    private static MoveNode parseMove(Scanner scanner) {//
         boolean isValid = checkFor("move", scanner);
         if (!isValid) {
             fail("'move' is not found", scanner);
@@ -681,7 +715,7 @@ public class Parser {
         return new MoveNode();
     }
 
-    private static WaitNode parseWait(Scanner scanner) {// TODO
+    private static WaitNode parseWait(Scanner scanner) {
         boolean isValid = checkFor("wait", scanner);
         if (!isValid) {
             fail("'wait' is not found", scanner);
