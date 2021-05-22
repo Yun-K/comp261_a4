@@ -14,9 +14,9 @@ public abstract class EXPR {
      * <p>
      * E.g.let's see lt(fuelLeft, 20)
      * <p>
-     * SEN::fuelLeft::getValue(Robot) will return the fuel left that robot hold
+     * SEN::fuelLeft::evaluate(Robot) will return the fuel left that robot hold
      * <p>
-     * And Num::getValue(Robot) will return 20 in this case.
+     * And Num::evaluate(Robot) will return 20 in this case.
      * 
      * @author Yun Zhou
      * @param robot

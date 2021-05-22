@@ -10,24 +10,6 @@ public abstract class RELOP implements COND {
     @Override
     public abstract String toString();
 
-    /**
-     * Get the sensorNode.
-     *
-     * @return the sensorNode
-     */
-    public EXPR getSensorNode() {
-        return childNode1;
-    }
-
-    /**
-     * Get the numExprNode.
-     *
-     * @return the numExprNode
-     */
-    public EXPR getNumExprNode() {
-        return childNode2;
-    }
-
 }
 
 /**
