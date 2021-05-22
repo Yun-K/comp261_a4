@@ -1,4 +1,4 @@
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,29 +8,37 @@ import java.util.List;
  * @author Yun Zhou 300442776
  * @version
  */
-public class IF extends STMT implements RobotProgramNode {
+public class IF extends STMT {
 
-    private List<COND> CONDITION;
+    /**
+     * condition list for holding conditions that if , elseIf, else got
+     */
+    private List<COND> conditionList = new ArrayList<COND>();
 
-    private List<BLOCK> block;
+    /**
+     * block list for holding blocks that if , elseIf, else got
+     */
+    private List<BLOCK> blockList = new ArrayList<BLOCK>();
 
-    private COND singleCOND;
+    /** single condition, for stage 1 only */
+    private COND singleCOND = null;
 
-    private BLOCK singleBlock;
+    /** single condition, for stage 1 only */
+    private BLOCK singleBlock = null;
 
     public IF(COND parseCOND, BLOCK parseBLOCK) {
         this.singleBlock = parseBLOCK;
         this.singleCOND = parseCOND;
     }
 
-    public IF(List<COND> conditions, List<BLOCK> block2) {
-        // TODO Auto-generated constructor stub
-        this.CONDITION = conditions;
-        this.block = block2;
+    public IF(List<COND> singleCond, List<BLOCK> blockList) {
+        this.conditionList = singleCond;
+        this.blockList = blockList;
     }
 
     @Override
     public void execute(Robot robot) {
+
         // for (COND cond : CONDITION) {
         // check if the condition is met
         if (singleCOND.evaluate(robot)) {
@@ -42,12 +50,12 @@ public class IF extends STMT implements RobotProgramNode {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("if(");
-        for (COND cond : CONDITION) {
+        for (COND cond : conditionList) {
             sb.append(cond.toString());
         }
         sb.append("){\n");
 
-        for (BLOCK b : this.block) {
+        for (BLOCK b : this.blockList) {
             sb.append(b.toString());
             sb.append("\n");
         }

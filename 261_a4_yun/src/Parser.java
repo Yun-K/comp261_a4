@@ -265,11 +265,9 @@ public class Parser {
          * check the CONDITION
          */
         // add all remaining cond into the list until find '}'
-        COND conditions = null;
-        conditions = parseCOND(scanner);
-        // check if it is empty
-        if (conditions == null) {
-            fail("no codition found inside IF ", scanner);
+        COND condition = parseCOND(scanner);
+        if (condition == null) {
+            fail("condition can not be NULL", scanner);
         }
 
         // check if it has the ')'
@@ -280,15 +278,33 @@ public class Parser {
         /*
          * check the BLOCK
          */
-        BLOCK block = null;
-        block = parseBLOCK(scanner);
+        BLOCK block = parseBLOCK(scanner);
         // check if it is empty
         if (block == null) {
             fail("no block found for IF ", scanner);
         }
 
-        // is Mathched, so return new LOOP
-        return new IF(conditions, block);
+        /*
+         * check whether next token is else
+         */
+        if (!checkFor("else", scanner)) {
+            // is Mathched, so return it
+            return new IF(condition, block);
+        }
+
+        /* found else, parse the else block */
+        BLOCK elseBlock = parseBLOCK(scanner);
+        return new IF(new ArrayList<COND>() {
+            {
+                add(condition);
+            }
+        }, new ArrayList<BLOCK>() {
+            {
+                add(block);
+                add(elseBlock);
+            }
+        });
+
     }
 
     static BLOCK parseBLOCK(Scanner scanner) {// DONE
