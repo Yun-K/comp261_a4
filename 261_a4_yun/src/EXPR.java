@@ -5,7 +5,7 @@
  * @author Yun Zhou 300442776
  * @version
  */
-public abstract class EXPR {
+public interface EXPR {
     // protected Robot robot;
 
     /**
@@ -28,7 +28,7 @@ public abstract class EXPR {
 
 }
 
-class NUM extends EXPR {
+class NUM implements EXPR {
     /**
      * the int value that this NUM hold.
      */
@@ -37,11 +37,10 @@ class NUM extends EXPR {
     /**
      * A constructor. It construct a new instance of NUM.
      *
-     * @param val
-     *            the val to be set
+     * @param val the val to be set
      */
     NUM(int val) {
-        assert val > -1;
+        // assert val > -1;
         this.val = val;
     }
 
@@ -54,4 +53,33 @@ class NUM extends EXPR {
     public String toString() {
         return String.valueOf(this.val);
     }
+}
+
+/**
+ * Var is adapter for STMT and EXPR
+ */
+class VAR extends STMT implements EXPR {
+    private String variableName;
+
+    private EXPR expr_value;
+
+    /**
+     * @param variableName
+     * @param value
+     */
+    public VAR(String variableName, EXPR value) {
+        this.variableName = variableName;
+        this.expr_value = value;
+    }
+
+    @Override
+    public int evaluate(Robot robot) {
+        return expr_value.evaluate(robot);
+    }
+
+    @Override
+    public String toString() {
+        return variableName + " = " + expr_value.toString();
+    }
+
 }

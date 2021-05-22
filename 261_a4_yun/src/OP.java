@@ -5,7 +5,7 @@
  * @author Yun Zhou 300442776
  * @version
  */
-public abstract class OP extends EXPR {
+public abstract class OP implements EXPR {
     protected EXPR childNode1, childNode2;
 
     public OP(EXPR child1, EXPR child2) {
