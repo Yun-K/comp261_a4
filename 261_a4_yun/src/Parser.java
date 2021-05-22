@@ -161,7 +161,7 @@ public class Parser {
     private static VAR parseVAR(Scanner scanner) {
         String variableName = scanner.next();// token name
         if (scanner.hasNext("=")) {
-            scanner.next();// '=' token
+            scanner.next();// jump '=' token
             EXPR valueEXP = parseExp(scanner);
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after " + valueEXP.toString(), scanner);
@@ -173,11 +173,14 @@ public class Parser {
         }
         // the case that do not have '='
         else {
+            // it has already exist in MAP,just return it
             if (variable_expr_map.containsKey(variableName)) {
                 return new VAR(variableName, variable_expr_map.get(variableName));
-            } else {
+            }
+            /* not in map, use default VAR where value is 0 */
+            else {
                 VAR toReturn = new VAR(variableName, new NUM(0));
-                variable_expr_map.put(variableName, new NUM(0));
+                variable_expr_map.put(variableName, new NUM(0));// put into map
                 return toReturn;
             }
         }
@@ -366,7 +369,7 @@ public class Parser {
         return new BLOCK(stmtNodes);
     }
 
-    private static COND parseCOND(Scanner scanner) {// TODO
+    private static COND parseCOND(Scanner scanner) {
         // if (!scanner.hasNext(RELOP_PATTERN)) {
         // fail("The cond is invalid", scanner);
         // }
@@ -403,7 +406,7 @@ public class Parser {
                     break;
             }
             return relop;
-        } else if (scanner.hasNext(CONDPattern_logic)) {
+        } else if (scanner.hasNext(CONDPattern_logic)) {// either and, or , not
             String nextToken = scanner.next();// either and, or , not
             if (!checkFor(OPENPAREN, scanner)) {
                 fail("'(' is missing after " + nextToken, scanner);
@@ -575,9 +578,26 @@ public class Parser {
                     break;
                 case "barrelLR":
                     sen = new BarrelLR();
+                    if (scanner.hasNext(OPENPAREN)) {
+                        scanner.next();// skip (
+                        EXPR expr = parseExp(scanner);
+                        if (!checkFor(CLOSEPAREN, scanner)) {
+                            fail(") is missing after Barrel(exp", scanner);
+                        }
+                        sen = new BarrelLR(expr);
+                    }
+
                     break;
                 case "barrelFB":
                     sen = new BarrelFB();
+                    if (scanner.hasNext(OPENPAREN)) {
+                        scanner.next();// skip (
+                        EXPR expr = parseExp(scanner);
+                        if (!checkFor(CLOSEPAREN, scanner)) {
+                            fail(") is missing after (exp", scanner);
+                        }
+                        sen = new BarrelFB(expr);
+                    }
                     break;
 
                 case "wallDist":
