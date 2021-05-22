@@ -30,15 +30,29 @@ class MoveNode extends ACT {
         super(actNode);
     }
 
+    private EXPR expr = null;
+
+    public MoveNode(EXPR expr) {
+        this.expr = expr;
+    }
+
     @Override
     public void execute(Robot robot) {
-        robot.move();// move the robot
+        if (expr != null) {
+            // move the number of the expr.evaluate()
+            for (int i = 0; i < expr.evaluate(robot); i++) {
+                robot.move();
+            }
+        }
+
+        // no expr, move robot once
+        robot.move();
     }
 
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return "move";
+        return "move;";
     }
 }
 
@@ -61,7 +75,7 @@ class TurnLNode extends ACT implements RobotProgramNode {
     @Override
     public String toString() {
         // return super.toString();
-        return "turnL";
+        return "turnL;";
     }
 }
 
@@ -83,7 +97,7 @@ class TurnRNode extends ACT implements RobotProgramNode {
 
     @Override
     public String toString() {
-        return "turnR";
+        return "turnR;";
     }
 
 }
@@ -108,7 +122,7 @@ class TakeFuelNode extends ACT {
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return "takeFuel";
+        return "takeFuel;";
     }
 }
 
@@ -118,10 +132,29 @@ class WaitNode extends ACT {
         super();
     }
 
+    private EXPR expr;
+
+    public WaitNode(EXPR expr) {
+        this.expr = expr;
+    }
+
     // }
     @Override
     public void execute(Robot robot) {
-        robot.idleWait();
+        if (expr != null) {
+            for (int i = 0; i < expr.evaluate(robot); i++) {
+                robot.idleWait();
+            }
+            // try {
+            // robot.wait(expr.evaluate(robot));
+            // } catch (InterruptedException e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
+        } else {
+            robot.idleWait();
+        }
+
         // try {
         // robot.wait();
         // } catch (InterruptedException e) {
@@ -133,7 +166,7 @@ class WaitNode extends ACT {
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return "wait";
+        return "wait;";
     }
 }
 
@@ -146,7 +179,7 @@ class turnAround extends ACT {
 
     @Override
     public String toString() {
-        return "turnAround";
+        return "turnAround;";
     }
 }
 
@@ -159,7 +192,7 @@ class shieldOn extends ACT {
 
     @Override
     public String toString() {
-        return "shieldOn";
+        return "shieldOn;";
     }
 }
 
@@ -173,6 +206,6 @@ class shieldOff extends ACT {
 
     @Override
     public String toString() {
-        return "shieldOff";
+        return "shieldOff;";
     }
 }

@@ -1,4 +1,4 @@
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,50 +8,90 @@ import java.util.List;
  * @author Yun Zhou 300442776
  * @version
  */
-public class IF extends STMT implements RobotProgramNode {
+public class IF extends STMT {
 
-    private List<COND> CONDITION;
+    /**
+     * condition list for holding conditions that if , elseIf, else got
+     */
+    private List<COND> conditionList = new ArrayList<COND>();
 
-    private List<BLOCK> block;
+    /**
+     * block list for holding blocks that if , elseIf, else got
+     */
+    private List<BLOCK> blockList = new ArrayList<BLOCK>();
 
-    private COND singleCOND;
+    boolean gotElse = false;
 
-    private BLOCK singleBlock;
+    /** single condition, for stage 1 only */
+    private COND singleCOND = null;
+
+    /** single condition, for stage 1 only */
+    private BLOCK singleBlock = null;
 
     public IF(COND parseCOND, BLOCK parseBLOCK) {
         this.singleBlock = parseBLOCK;
         this.singleCOND = parseCOND;
+
+        this.blockList.add(parseBLOCK);
+        this.conditionList.add(parseCOND);
     }
 
-    public IF(List<COND> conditions, List<BLOCK> block2) {
-        // TODO Auto-generated constructor stub
-        this.CONDITION = conditions;
-        this.block = block2;
+    public IF(List<COND> condList, List<BLOCK> blockList, boolean gotElse) {
+        this.conditionList = condList;
+        this.blockList = blockList;
+        this.gotElse = gotElse;
+
+        if (conditionList.size() == 1) {
+            this.singleCOND = conditionList.get(0);
+        }
     }
 
     @Override
     public void execute(Robot robot) {
-        // for (COND cond : CONDITION) {
-        // check if the condition is met
-        if (singleCOND.evaluate(robot)) {
-            this.singleBlock.execute(robot);
+        // in the case of the there is only one COND,
+        // which means we only got :
+        // if with else OR if without else
+        if (this.conditionList.size() == 1) {
+            // check if the condition is met
+            if (this.conditionList.get(0).evaluate(robot)) {
+                this.blockList.get(0).execute(robot);
+            }
+            // the condition is not met for the if(COND),
+            // so execute else block if gotElse
+            else {
+                if (this.blockList.size() > 1) {
+                    if (this.gotElse) {
+                        // execute else block
+                        this.blockList.get(blockList.size() - 1).execute(robot);
+                    }
+                }
+            }
         }
+        /*
+         * got elif
+         */
+        else {
+        }
+        // // check if the condition is met
+        // if (singleCOND.evaluate(robot)) {
+        // this.singleBlock.execute(robot);
         // }
     }
 
+    /**
+     * need to fix this since
+     */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("if(");
-        for (COND cond : CONDITION) {
-            sb.append(cond.toString());
+        StringBuffer sb = new StringBuffer("if(")
+                .append(this.conditionList.get(0).toString())
+                .append(")")
+                .append(blockList.get(0).toString());
+        if (gotElse) {
+            sb.append("else\t")
+                    .append(blockList.get(blockList.size() - 1).toString());
         }
-        sb.append("){\n");
 
-        for (BLOCK b : this.block) {
-            sb.append(b.toString());
-            sb.append("\n");
-        }
-        sb.append("}");
         return sb.toString();
 
     }
