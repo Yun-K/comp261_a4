@@ -132,9 +132,25 @@ class WaitNode extends ACT {
         super();
     }
 
+    private EXPR expr;
+
+    public WaitNode(EXPR expr) {
+        this.expr = expr;
+    }
+
     // }
     @Override
     public void execute(Robot robot) {
+        if (expr != null) {
+
+            try {
+                robot.wait(expr.evaluate(robot));
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
         robot.idleWait();
         // try {
         // robot.wait();
