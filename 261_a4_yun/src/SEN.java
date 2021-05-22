@@ -112,9 +112,30 @@ class NumBarrels extends SEN {
 
 class BarrelLR extends SEN {
 
+    private EXPR exp = null;
+
+    /**
+     * Constructor for stage 3.
+     * 
+     * @param exp
+     */
+    public BarrelLR(EXPR exp) {
+        if (exp == null) {
+            String msg = "The arg for BarrelLR can not be null!" + "\n   @ ...";
+            throw new ParserFailureException(msg + "...");
+        }
+        this.exp = exp;
+    }
+
+    /**
+     * default constructor
+     */
+    public BarrelLR() {
+    }
+
     @Override
     public int evaluate(Robot robot) {
-        return robot.getClosestBarrelLR();
+        return exp == null ? robot.getClosestBarrelLR() : robot.getBarrelLR(exp.evaluate(robot));
     }
 
     @Override
@@ -125,9 +146,30 @@ class BarrelLR extends SEN {
 
 class BarrelFB extends SEN {
 
+    private EXPR exp = null;
+
+    /**
+     * Constructor for stage 3.
+     * 
+     * @param exp
+     */
+    public BarrelFB(EXPR exp) {
+        if (exp == null) {
+            String msg = "The arg for BarrelFB can not be null!" + "\n   @ ...";
+            throw new ParserFailureException(msg + "...");
+        }
+        this.exp = exp;
+    }
+
+    /**
+     * default constructor
+     */
+    public BarrelFB() {
+    }
+
     @Override
     public int evaluate(Robot robot) {
-        return robot.getClosestBarrelFB();
+        return exp == null ? robot.getClosestBarrelFB() : robot.getBarrelFB(exp.evaluate(robot));
     }
 
     @Override
