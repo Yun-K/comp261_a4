@@ -9,7 +9,7 @@
  * @author Yun Zhou 300442776
  * @version
  */
-public abstract class SEN extends EXPR {
+public abstract class SEN implements EXPR {
 
     public SEN() {
     }
@@ -65,11 +65,11 @@ class FuelLeftNode extends SEN {
 class OppLR extends SEN {
 
     /**
-     * Gets the left-right-location of the other robot relative to the currentposition and
-     * orientation.
+     * Gets the left-right-location of the other robot relative to the
+     * currentposition and orientation.
      * 
-     * @return:INFINITY if there isn't a second robot, -ve if to the left, +veif to the right
-     *                  and 0 if directly in front or behind
+     * @return:INFINITY if there isn't a second robot, -ve if to the left, +veif to
+     *                  the right and 0 if directly in front or behind
      * 
      * @see EXPR#evaluate(Robot)
      */
