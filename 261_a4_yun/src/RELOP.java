@@ -33,11 +33,8 @@ class lt extends RELOP {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("lt(")
-                .append(childNode1.toString())
-                .append(",")
-                .append(childNode2.toString())
-                .append(")");
+        StringBuffer sb = new StringBuffer("lt(").append(childNode1.toString()).append(",")
+                .append(childNode2.toString()).append(")");
         return sb.toString();
 
     }
@@ -68,11 +65,8 @@ class Gt extends RELOP {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("gt(")
-                .append(childNode1.toString())
-                .append(",")
-                .append(childNode2.toString())
-                .append(");");
+        StringBuffer sb = new StringBuffer("gt(").append(childNode1.toString()).append(",")
+                .append(childNode2.toString()).append(")");
         return sb.toString();
 
     }
@@ -99,11 +93,8 @@ class Eq extends RELOP {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("eq(")
-                .append(childNode1.toString())
-                .append(",")
-                .append(childNode2.toString())
-                .append(")");
+        StringBuffer sb = new StringBuffer("eq(").append(childNode1.toString()).append(",")
+                .append(childNode2.toString()).append(")");
         return sb.toString();
 
     }

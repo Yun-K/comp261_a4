@@ -144,7 +144,7 @@ public class Parser {
         } else if (scanner.hasNext("while")) {
             return parseWHILE(scanner);
         }
-        // for stage 3 & 4, VAR class
+        // for stage 3 & 4, VAR class (aka ASSGN)
         else if (scanner.hasNext(VAR_PATTERN)) {
             return parseVAR(scanner);
 
@@ -152,6 +152,10 @@ public class Parser {
 
         // expected token is missing! execute code below
         else {
+            // String remainingToken = scanner.next();// for debugging in stage3
+            // while (scanner.hasNext()) {
+            // remainingToken += (scanner.next());
+            // }
             fail("Next token can't start since it is invalid for STMT!" + "\nNext token is :"
                     + (scanner.hasNext() ? scanner.next() : null), scanner);
             return null;
@@ -327,6 +331,9 @@ public class Parser {
         }
 
         boolean gotElseIf = scanner.hasNext("elif");
+        if (gotElseIf) {// skip elif
+            scanner.next();
+        }
         boolean elseif_is_initialTrue = gotElseIf ? true : false;
         while (gotElseIf) {
             // check if it has the '('
@@ -360,6 +367,11 @@ public class Parser {
 
             // go to scan if there is next else if
             gotElseIf = scanner.hasNext("elif");
+            if (gotElseIf) {// skip elif
+                scanner.next();
+            } else if (!gotElseIf) {
+                break;// no elif, break it
+            }
 
         }
 
