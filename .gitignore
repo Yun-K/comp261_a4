@@ -84,7 +84,7 @@ log/
 *.jar
 *.war
 *.ear
-*.zip
+# *.zip
 *.tar.gz
 *.rar
 
