@@ -167,13 +167,17 @@ public class Parser {
         if (scanner.hasNext("=")) {
             scanner.next();// jump '=' token
             EXPR valueEXP = parseExp(scanner);
+
+            // System.out.println("fgbhkik" + valueEXP.toString());
             if (!checkFor(";", scanner)) {
                 fail("';' is missing after " + valueEXP.toString(), scanner);
             }
+            VAR v = new VAR(variableName, valueEXP);
 
-            variable_expr_map.put(variableName, valueEXP);// put it into the Map, if it's already exist, it will
-                                                          // update the corresponding value
-            return new VAR(variableName, valueEXP);
+            variable_expr_map.put(variableName, v);// put it into the Map, if it's already exist, it will
+                                                   // update the corresponding value
+
+            return v;
         }
         // the case that do not have '='
         else {
@@ -184,7 +188,7 @@ public class Parser {
             /* not in map, use default VAR where value is 0 */
             else {
                 VAR toReturn = new VAR(variableName, new NUM(0));
-                variable_expr_map.put(variableName, new NUM(0));// put into map
+                variable_expr_map.put(variableName, toReturn);// put into map
                 return toReturn;
             }
         }

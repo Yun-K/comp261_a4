@@ -12,8 +12,7 @@ public class STMT implements RobotProgramNode {
     /**
      * A constructor. It construct a new instance of STMT.
      *
-     * @param node
-     *            should be either LOOP or ACT
+     * @param node should be either LOOP or ACT
      */
     public STMT(RobotProgramNode node) {
         this.childNOdes = node;
@@ -24,6 +23,8 @@ public class STMT implements RobotProgramNode {
 
     @Override
     public void execute(Robot robot) {
+        if (childNOdes == null)
+            return;
         childNOdes.execute(robot);
     }
 
@@ -31,4 +32,3 @@ public class STMT implements RobotProgramNode {
         return childNOdes.toString();
     }
 }
-
