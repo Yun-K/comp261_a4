@@ -174,8 +174,10 @@ public class Parser {
             }
             VAR v = new VAR(variableName, valueEXP);
 
-            variable_expr_map.put(variableName, v);// put it into the Map, if it's already exist, it will
-                                                   // update the corresponding value
+            if (variable_expr_map.containsKey(variableName)) {
+                variable_expr_map.replace(variableName, v);
+            } else
+                variable_expr_map.put(variableName, valueEXP);
 
             return v;
         }
