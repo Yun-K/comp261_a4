@@ -1,0 +1,18 @@
+I finish stage 0, 1, 2, 3, didnot do the stage 4 which is the challenge one.
+Also, I answer the additional questions which can be seen in WrittenAnswers.pdf.
+
+For the convenience, some of the classes are built inside some of the java classes, 
+for example: inside OP.java, also there are add,sub,div,mul classes.
+
+
+
+For the parser, it can throw parseFailureError successfully on all the 
+provided bad prog, and can parse the good prog (simple, full) successfully.
+When the parser parse the good prog, the parsed string will be printed in the terminal,
+but the syntax looks ugly since the indentation is not set well in each of the toString methods.
+
+By the way, since stage2 use the EXP which cause SEN and NUM belongs to the EXP, 
+so some of the s1_badProg can also be parsed and run successfully.
+
+For the RobotGame, I try to read the prog file and see what is happened when load the prog 
+to the Robot, seems like the robot can all run what the prog file expected. 
